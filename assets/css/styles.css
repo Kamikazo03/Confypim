@@ -1,0 +1,484 @@
+/* ==========================================================
+   CONFIPYM
+   Hoja de estilos principal
+   ==========================================================
+   Contiene los estilos generales utilizados por todas las
+   vistas del sistema Confipym.
+
+   Incluye la configuración visual del layout principal,
+   componentes reutilizables y comportamiento responsive.
+
+   Organización:
+
+   1. Design System
+   2. Reset General
+   3. Estructura Principal
+   4. Sidebar
+   5. Menú Lateral
+   6. Sidebar Colapsado
+   7. Topbar
+   8. Tarjetas del Dashboard
+   9. Tablas
+   10. Badges de Estado
+   11. Layout CRUD
+   12. Footer
+   13. Responsive
+   ========================================================== */
+
+/* ==========================================================
+   DESIGN SYSTEM
+   ========================================================== */
+
+:root{
+    --bg:#F8F5F2;
+    --card:#FFFFFF;
+    --primary:#EBC8D6;
+    --primary-dark:#D58BA6;
+    --primary-light:#F6E7EE;
+    --secondary:#B8896A;
+    --text:#4A4A4A;
+    --border:#E7DED8;
+    --shadow:0 8px 20px rgba(0,0,0,.08);
+    --radius:16px;
+    --font:'Poppins',sans-serif;
+}
+
+/* ==========================================================
+   RESET GENERAL
+   ========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:var(--font);
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ==========================================================
+   ESTRUCTURA PRINCIPAL
+   ========================================================== */
+
+.app{
+    display:flex;
+    align-items:stretch;
+    min-height:100vh;
+    background:var(--bg);
+}
+
+.content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    min-height:100vh;
+}
+
+.main{
+    flex:1;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+
+.sidebar{
+    width:250px;
+    background:var(--secondary);
+    color:#FFFFFF;
+    padding:20px;
+    overflow:hidden;
+    transition:.3s ease;
+    position:sticky;
+    top:0;
+    height:100vh;
+    flex-shrink:0;
+}
+
+.logo{
+    margin-bottom:20px;
+}
+
+.imagen{
+    display:none;
+}
+
+.toggle-btn{
+    background:none;
+    border:none;
+    color:#FFFFFF;
+    font-size:20px;
+    cursor:pointer;
+    margin-bottom:20px;
+    margin-left:10px;
+}
+
+/* ==========================================================
+   MENÚ LATERAL
+   ========================================================== */
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.menu a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px;
+    color:#FFFFFF;
+    text-decoration:none;
+    border-radius:var(--radius);
+    transition:.3s;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,.20);
+    transform:translateX(3px);
+}
+
+.menu a.active{
+    background:rgba(255,255,255,.25);
+    font-weight:600;
+}
+
+/* ==========================================================
+   SIDEBAR COLAPSADO
+   ========================================================== */
+
+.sidebar.collapsed{
+    width:80px;
+}
+
+.sidebar.collapsed .text{
+    display:none;
+}
+
+.sidebar.collapsed .menu a{
+    justify-content:center;
+    gap:0;
+}
+
+.sidebar.collapsed .logo{
+    display:none;
+}
+
+.sidebar.collapsed .imagen{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    margin-bottom:20px;
+    object-fit:cover;
+}
+
+/* ==========================================================
+   TOPBAR
+   ========================================================== */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    padding:22px 30px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+}
+
+/* ==========================================================
+   Información de la página
+   ========================================================== */
+
+.topbar-left{
+    display:flex;
+    flex-direction:column;
+}
+
+.topbar-left h1{
+    margin:0;
+    font-size:28px;
+    color:var(--text);
+}
+
+.subtitle{
+    margin-top:6px;
+    color:#7D7D7D;
+    font-size:14px;
+}
+
+/* ==========================================================
+   Área derecha
+   ========================================================== */
+
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+/* ==========================================================
+   Botón de notificaciones
+   ========================================================== */
+
+.notification-btn{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    background:#F7EDF2;
+    color:var(--primary-dark);
+    cursor:pointer;
+    transition:.3s;
+}
+
+.notification-btn:hover{
+    background:var(--primary-dark);
+    color:#FFFFFF;
+    transform:scale(1.05);
+}
+
+/* ==========================================================
+   Usuario
+   ========================================================== */
+
+.user-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.user-avatar{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:var(--primary-dark);
+    color:#FFFFFF;
+    font-size:16px;
+    font-weight:700;
+    border:2px solid #FFFFFF;
+    box-shadow:0 6px 15px rgba(213,139,166,.35);
+}
+
+.user-info{
+    display:flex;
+    flex-direction:column;
+}
+
+.user-name{
+    font-weight:600;
+    color:var(--text);
+}
+
+.user-role{
+    font-size:13px;
+    color:#7A7A7A;
+}
+
+/* ==========================================================
+   TARJETAS DEL DASHBOARD
+   ========================================================== */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.card{
+    padding:20px;
+    text-align:center;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    transition:transform .25s ease,
+               box-shadow .25s ease;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 25px rgba(0,0,0,.12);
+}
+
+.card h3{
+    font-size:14px;
+    color:#808080;
+}
+
+.card p{
+    margin-top:10px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* ==========================================================
+   TABLAS
+   ========================================================== */
+
+.table-section{
+    padding:20px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+}
+
+.table-card{
+    padding:24px;
+    min-height:500px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+}
+
+table{
+    width:100%;
+    margin-top:10px;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+th{
+    background:#F3F3F3;
+}
+
+/* ==========================================================
+   BADGES DE ESTADO
+   ========================================================== */
+
+.badge{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.badge.disponible{
+    background:#DFF6E5;
+    color:#2E7D32;
+}
+
+.badge.stock-bajo{
+    background:#FFF3CD;
+    color:#B7791F;
+}
+
+.badge.agotado{
+    background:#F8D7DA;
+    color:#C62828;
+}
+
+/* ==========================================================
+   LAYOUT CRUD
+   ========================================================== */
+
+.crud-layout{
+    display:grid;
+    grid-template-columns:450px 1fr;
+    gap:24px;
+    align-items:start;
+}
+
+.crud-sidebar{
+    display:flex;
+    flex-direction:column;
+}
+
+.crud-content{
+    display:flex;
+    flex-direction:column;
+}
+
+.sticky-card{
+    position:sticky;
+    top:20px;
+}
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+
+.footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:auto;
+    padding:18px 30px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    color:#8A8A8A;
+    font-size:14px;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+/* ==========================================================
+   Pantallas menores a 1100px
+   ========================================================== */
+
+@media (max-width:1100px){
+    .crud-layout{
+        grid-template-columns:1fr;
+    }
+    .sticky-card{
+        position:static;
+    }
+}
+
+/* ==========================================================
+   Pantallas menores a 1024px
+   ========================================================== */
+
+@media (max-width:1024px){
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+/* ==========================================================
+   Pantallas menores a 768px
+   ========================================================== */
+
+@media (max-width:768px){
+    .sidebar{
+        width:80px;
+        position:fixed;
+        height:100vh;
+    }
+    .sidebar .text{
+        display:none;
+    }
+    .menu a{
+        justify-content:center;
+    }
+    .main{
+        margin-left:80px;
+    }
+    .cards{
+        grid-template-columns:1fr;
+    }
+}

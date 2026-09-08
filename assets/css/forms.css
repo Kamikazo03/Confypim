@@ -1,0 +1,235 @@
+/* ==========================================================
+   Formularios
+   ==========================================================
+   Estilos utilizados por los formularios del sistema.
+
+   Incluye:
+   - Tarjetas
+   - Campos
+   - Botones
+   - Acciones
+   - Responsive
+   ========================================================== */
+
+/* ==========================================================
+   Tarjeta del formulario
+   ========================================================== */
+
+.form-card{
+    background:#FFFFFF;
+    border-radius:20px;
+    padding:32px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* ==========================================================
+   Encabezado de la tarjeta
+   ========================================================== */
+
+.card-title{
+    margin-bottom:35px;
+}
+
+.card-title h2{
+    color:var(--text);
+    font-size:32px;
+    margin-bottom:8px;
+}
+
+.card-title p{
+    color:#777;
+    font-size:16px;
+}
+
+/* ==========================================================
+   Grupos del formulario
+   ========================================================== */
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:25px;
+}
+
+.form-group label{
+    margin-bottom:10px;
+    font-weight:600;
+    color:var(--text);
+}
+
+/* ==========================================================
+   Campos del formulario
+   ========================================================== */
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:14px 18px;
+    border:1px solid #D9D9D9;
+    border-radius:12px;
+    background:#FFFFFF;
+    font-size:15px;
+    transition:.3s;
+    outline:none;
+    font-family:inherit;
+}
+
+/* ==========================================================
+   Estado Focus
+   ========================================================== */
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px rgba(233,154,174,.20);
+}
+
+/* ==========================================================
+   Área de texto
+   ========================================================== */
+
+.form-group textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+/* ==========================================================
+   Distribución de columnas
+   ========================================================== */
+
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+/* ==========================================================
+   Grupo de botones
+   ========================================================== */
+
+.buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+    margin-top:35px;
+}
+
+/* ==========================================================
+   Botón principal
+   ========================================================== */
+
+.btn-primary{
+    background:var(--primary-dark);
+    color:white;
+    border:none;
+    padding:14px 26px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    opacity:.9;
+}
+
+/* ==========================================================
+   Botón secundario
+   ========================================================== */
+
+.btn-secondary{
+    background:white;
+    color:var(--primary);
+    border:2px solid var(--primary);
+    padding:14px 26px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn-secondary:hover{
+    background:var(--primary-light);
+    opacity:.9;
+}
+
+/* ==========================================================
+   Botones de acción
+   ========================================================== */
+
+.actions{
+    display:flex;
+    justify-content:left;
+    gap:10px;
+}
+
+.btn-action{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:.25s;
+    color:#FFFFFF;
+    font-size:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.btn-action.edit{
+    background:var(--primary-dark);
+}
+
+.btn-action.delete{
+    background:#E74C3C;
+}
+
+.btn-action:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+}
+
+.btn-action.edit:hover{
+    background:#8B4B5B;
+}
+
+.btn-action.delete:hover{
+    background:#C0392B;
+}
+
+/* ==========================================================
+   Estado de edición
+   ========================================================== */
+
+.form-card.editing{
+    border:2px solid var(--primary);
+    box-shadow:0 12px 35px rgba(160,86,106,.20);
+}
+
+/* ==========================================================
+   Diseño responsive
+   ========================================================== */
+
+@media(max-width:768px){
+
+    .form-card{
+        padding:25px;
+    }
+    .form-row{
+        grid-template-columns:1fr;
+    }
+
+    .buttons{
+        flex-direction:column;
+    }
+
+    .btn-primary,
+    .btn-secondary{
+        width:100%;
+    }
+}
