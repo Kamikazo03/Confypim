@@ -74,12 +74,6 @@ switch ($pagina) {
 
     case 'ventas':
 
-        require_once __DIR__ . '/app/controllers/ProductoController.php';
-
-        $productoController = new ProductoController();
-
-        $productos = $productoController->listarProductos();
-
         $paginaActual = 'ventas';
 
         require_once __DIR__ . '/app/views/ventas/ventas.php';

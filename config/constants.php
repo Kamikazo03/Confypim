@@ -42,7 +42,7 @@ define('ROOT_PATH', dirname(__DIR__));
  * Modificar únicamente si cambia
  * el nombre de la carpeta raíz.
  */
-define('BASE_URL', '/evidencia_EV06/');
+define('BASE_URL', '/Confypim/');
 
 /* ==========================================================
  * RECURSOS COMPARTIDOS
