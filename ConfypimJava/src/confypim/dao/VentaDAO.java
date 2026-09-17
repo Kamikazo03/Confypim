@@ -2,8 +2,8 @@ package confypim.dao;
 
 import confypim.config.Conexion;
 import confypim.model.DetalleVenta;
+import confypim.model.Producto;
 import confypim.model.Venta;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1519,4 +1519,68 @@ public class VentaDAO {
             }
         }
     }
+
+        /**
+         * Obtiene los productos activos disponibles para utilizar
+         * en el formulario de creación de ventas.
+         *
+         * @return lista de productos activos.
+         * @throws SQLException si ocurre un error durante la consulta.
+         */
+        public List<Producto> listarProductosDisponibles()
+                throws SQLException {
+
+        List<Producto> productos = new ArrayList<>();
+
+        String sql = """
+                SELECT
+                        id_producto,
+                        nombre,
+                        precio_unitario,
+                        stock_disponible,
+                        activo
+                FROM producto
+                WHERE activo = 1
+                ORDER BY nombre ASC
+                """;
+
+        try (
+                Connection conexion = Conexion.conectar();
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql);
+                ResultSet resultado =
+                        statement.executeQuery()
+        ) {
+
+                while (resultado.next()) {
+
+                Producto producto = new Producto();
+
+                producto.setIdProducto(
+                        resultado.getInt("id_producto")
+                );
+
+                producto.setNombre(
+                        resultado.getString("nombre")
+                );
+
+                producto.setPrecio(
+                        resultado.getBigDecimal("precio_unitario")
+                );
+
+                producto.setStock(
+                        resultado.getInt("stock_disponible")
+                );
+
+                producto.setActivo(
+                        resultado.getBoolean("activo")
+                );
+
+                productos.add(producto);
+                }
+        }
+
+        return productos;
+        }
+
 }

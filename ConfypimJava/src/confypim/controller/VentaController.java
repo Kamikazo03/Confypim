@@ -2,8 +2,8 @@ package confypim.controller;
 
 import confypim.dao.VentaDAO;
 import confypim.model.DetalleVenta;
+import confypim.model.Producto;
 import confypim.model.Venta;
-
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
@@ -162,6 +162,19 @@ public class VentaController {
         return ventaDAO.obtenerStockProducto(
                 idProducto
         );
+    }
+
+    /**
+     * Obtiene los productos activos disponibles para
+     * crear una venta.
+     *
+     * @return lista de productos disponibles.
+     * @throws SQLException si ocurre un error durante la consulta.
+     */
+    public List<Producto> listarProductosDisponibles()
+            throws SQLException {
+
+        return ventaDAO.listarProductosDisponibles();
     }
  
 }
