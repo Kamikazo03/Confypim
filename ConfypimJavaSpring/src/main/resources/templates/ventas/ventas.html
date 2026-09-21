@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <!--
+        Configuración básica de codificación de caracteres.
+        Permite utilizar correctamente tildes y caracteres especiales.
+    -->
+    <meta charset="UTF-8">
+
+    <!--
+        Permite que la interfaz se adapte a dispositivos móviles,
+        tabletas y computadores.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+        Título que aparecerá en la pestaña del navegador.
+    -->
+    <title>Confypim | Gestión de ventas</title>
+
+    <!--
+        Importación de la fuente Poppins desde Google Fonts.
+        Esta fuente coincide con la identidad visual del proyecto.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!--
+        Hoja de estilos propia del módulo de ventas.
+        No se utiliza Bootstrap.
+    -->
+    <link rel="stylesheet"
+          th:href="@{/css/ventas.css}">
+
+</head>
+
+<body>
+
+    <!--
+        Contenedor principal de toda la aplicación.
+        Se utiliza para organizar la barra lateral
+        y el contenido principal.
+    -->
+    <div class="app-container">
+
+        <!-- =====================================================
+             BARRA LATERAL
+             ===================================================== -->
+
+        <aside class="sidebar">
+
+            <!--
+                Encabezado de la barra lateral.
+                Puede reemplazarse posteriormente por el logo
+                real de Confypim.
+            -->
+            <div class="sidebar-brand">
+
+                <div class="brand-logo">
+                    C
+                </div>
+
+                <div class="brand-information">
+
+                    <h2>Confypim</h2>
+
+                    <span>Administración</span>
+
+                </div>
+
+            </div>
+
+            <!--
+                Menú principal de navegación.
+                Por ahora, la opción Ventas se marca como activa.
+            -->
+            <nav class="sidebar-navigation">
+
+                <p class="navigation-title">
+                    MENÚ PRINCIPAL
+                </p>
+
+                <a href="#"
+                   class="navigation-link">
+
+                    <span class="navigation-icon">⌂</span>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+                <a href="#"
+                   class="navigation-link">
+
+                    <span class="navigation-icon">▦</span>
+
+                    <span>Productos</span>
+
+                </a>
+
+                <a href="/ventas"
+                   class="navigation-link active">
+
+                    <span class="navigation-icon">🛒</span>
+
+                    <span>Ventas</span>
+
+                </a>
+
+                <a href="#"
+                   class="navigation-link">
+
+                    <span class="navigation-icon">▤</span>
+
+                    <span>Reportes</span>
+
+                </a>
+
+            </nav>
+
+            <!--
+                Parte inferior de la barra lateral.
+                Se deja como espacio para futuras opciones
+                como configuración o cierre de sesión.
+            -->
+            <div class="sidebar-footer">
+
+                <span class="footer-label">
+                    Confypim
+                </span>
+
+                <span class="footer-version">
+                    Módulo Spring Boot
+                </span>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+             ===================================================== -->
+
+        <main class="main-content">
+
+            <!--
+                Encabezado superior de la página.
+                Incluye el título y un botón para registrar una venta.
+            -->
+            <header class="page-header">
+
+                <div class="page-heading">
+
+                    <span class="page-breadcrumb">
+                        Inicio / Ventas
+                    </span>
+
+                    <h1>
+                        Gestión de ventas
+                    </h1>
+
+                    <p>
+                        Registra, consulta y administra las ventas de Confypim.
+                    </p>
+
+                </div>
+
+                <!--
+                    El botón abre el formulario de creación
+                    utilizando una función JavaScript.
+                -->
+                <button type="button"
+                        class="button button-primary"
+                        id="button-new-sale">
+
+                    <span>＋</span>
+
+                    Nueva venta
+
+                </button>
+
+            </header>
+
+
+            <!-- =================================================
+                 TARJETAS INFORMATIVAS
+                 ================================================= -->
+
+            <section class="metrics-grid"
+                     aria-label="Resumen de ventas">
+
+                <article class="metric-card">
+
+                    <div class="metric-icon pink">
+                        🛍
+                    </div>
+
+                    <div class="metric-content">
+
+                        <span class="metric-label">
+                            Total de ventas
+                        </span>
+
+                        <strong class="metric-value"
+                                id="metric-total-sales">
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <div class="metric-icon brown">
+                        ⏳
+                    </div>
+
+                    <div class="metric-content">
+
+                        <span class="metric-label">
+                            Ventas pendientes
+                        </span>
+
+                        <strong class="metric-value"
+                                id="metric-pending-sales">
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <div class="metric-icon green">
+                        ✓
+                    </div>
+
+                    <div class="metric-content">
+
+                        <span class="metric-label">
+                            Ventas pagadas
+                        </span>
+
+                        <strong class="metric-value"
+                                id="metric-paid-sales">
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <div class="metric-icon purple">
+                        $
+                    </div>
+
+                    <div class="metric-content">
+
+                        <span class="metric-label">
+                            Ingresos pagados
+                        </span>
+
+                        <strong class="metric-value"
+                                id="metric-paid-income">
+
+                            $0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECCIÓN DE LISTADO
+                 ================================================= -->
+
+            <section class="content-card">
+
+                <!--
+                    Encabezado de la tabla.
+                    Contiene el título y los controles de búsqueda.
+                -->
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Ventas registradas
+                        </h2>
+
+                        <p>
+                            Consulta las ventas pendientes y pagadas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!--
+                    Filtros de búsqueda.
+                    El filtro se aplica en el navegador
+                    sobre las ventas cargadas desde la API.
+                -->
+                <div class="filters-container">
+
+                    <div class="form-group search-group">
+
+                        <label for="input-search">
+                            Buscar venta
+                        </label>
+
+                        <input type="search"
+                               id="input-search"
+                               class="form-control"
+                               placeholder="Buscar por cliente o número...">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="select-status">
+                            Estado
+                        </label>
+
+                        <select id="select-status"
+                                class="form-control">
+
+                            <option value="Todos">
+                                Todos los estados
+                            </option>
+
+                            <option value="Pendiente">
+                                Pendiente
+                            </option>
+
+                            <option value="Pagada">
+                                Pagada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-actions">
+
+                        <button type="button"
+                                class="button button-secondary"
+                                id="button-refresh">
+
+                            ↻ Actualizar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!--
+                    Contenedor de mensajes para informar al usuario
+                    si ocurre algún error o si una operación finaliza.
+                -->
+                <div id="message-container"
+                     class="message-container"
+                     role="alert"
+                     aria-live="polite">
+
+                </div>
+
+
+                <!--
+                    Contenedor responsive de la tabla.
+                    Permite desplazamiento horizontal en pantallas pequeñas.
+                -->
+                <div class="table-container">
+
+                    <table class="sales-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Fecha
+                                </th>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Total
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th>
+                                    Acciones
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <!--
+                            Las filas serán generadas dinámicamente
+                            mediante JavaScript.
+                        -->
+                        <tbody id="sales-table-body">
+
+                            <tr>
+
+                                <td colspan="6"
+                                    class="table-loading">
+
+                                    Cargando ventas...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL PARA CREAR O EDITAR UNA VENTA
+         ========================================================= -->
+
+    <div class="modal-overlay"
+         id="sale-modal"
+         aria-hidden="true">
+
+        <div class="modal modal-large"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="sale-modal-title">
+
+            <!-- Encabezado del modal -->
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="modal-eyebrow">
+                        Confypim
+                    </span>
+
+                    <h2 id="sale-modal-title">
+                        Nueva venta
+                    </h2>
+
+                </div>
+
+                <button type="button"
+                        class="modal-close"
+                        id="button-close-sale-modal"
+                        aria-label="Cerrar ventana">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <!-- Formulario principal -->
+            <form id="sale-form">
+
+                <!--
+                    Campo oculto utilizado para identificar
+                    si se está creando o editando una venta.
+                -->
+                <input type="hidden"
+                       id="input-sale-id">
+
+
+                <div class="form-grid">
+
+                <!--
+                    Cliente asociado a la venta.
+
+                    En esta versión de Confypim solamente se utiliza
+                    el cliente general.
+
+                    El campo se presenta como una lista desplegable
+                    para mantener preparada la interfaz para futuras
+                    versiones que permitan agregar más clientes.
+                -->
+                <div class="form-group">
+
+                    <label for="select-client">
+
+                        Cliente
+
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <!--
+                        Lista de clientes disponible actualmente.
+
+                        La opción Cliente General se encuentra
+                        seleccionada y es la única alternativa.
+                    -->
+                    <select id="select-client"
+                            class="form-control"
+                            required>
+
+                        <option value="general"
+                                selected>
+
+                            Cliente General
+
+                        </option>
+
+                    </select>
+
+                    <small class="form-help">
+
+                        En esta versión todas las ventas se registran
+                        como Cliente General.
+
+                    </small>
+
+                </div>
+
+
+                    <!-- Usuario responsable -->
+                    <div class="form-group">
+
+                        <label for="input-user-id">
+                            ID del usuario
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="number"
+                               id="input-user-id"
+                               class="form-control"
+                               min="1"
+                               placeholder="Ejemplo: 1"
+                               required>
+
+                        <small class="form-help">
+                            Debe existir en la tabla usuario.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SECCIÓN DE PRODUCTOS
+                     ================================================= -->
+
+                <div class="products-section">
+
+                    <div class="subsection-header">
+
+                        <div>
+
+                            <h3>
+                                Productos de la venta
+                            </h3>
+
+                            <p>
+                                Agrega uno o varios productos.
+                            </p>
+
+                        </div>
+
+                        <button type="button"
+                                class="button button-secondary button-small"
+                                id="button-add-product">
+
+                            ＋ Agregar producto
+
+                        </button>
+
+                    </div>
+
+
+                    <!--
+                        Aquí se generarán dinámicamente las filas
+                        de productos utilizando JavaScript.
+                    -->
+                    <div id="sale-products-container"
+                         class="sale-products-container">
+
+                    </div>
+
+
+                    <!--
+                        Mensaje mostrado cuando todavía no existen
+                        productos agregados al formulario.
+                    -->
+                    <p id="empty-products-message"
+                       class="empty-products-message">
+
+                        Agrega al menos un producto para continuar.
+
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     RESUMEN DE LA VENTA
+                     ================================================= -->
+
+                <div class="sale-summary">
+
+                    <span>
+                        Total de la venta
+                    </span>
+
+                    <strong id="sale-total">
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <!-- Botones del formulario -->
+                <div class="modal-actions">
+
+                    <button type="button"
+                            class="button button-outline"
+                            id="button-cancel-sale-form">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="button button-primary"
+                            id="button-save-sale">
+
+                        Guardar venta
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL PARA CONSULTAR DETALLES
+         ========================================================= -->
+
+    <div class="modal-overlay"
+         id="details-modal"
+         aria-hidden="true">
+
+        <div class="modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="details-modal-title">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="modal-eyebrow">
+                        Información
+                    </span>
+
+                    <h2 id="details-modal-title">
+                        Detalles de la venta
+                    </h2>
+
+                </div>
+
+                <button type="button"
+                        class="modal-close"
+                        id="button-close-details-modal"
+                        aria-label="Cerrar detalles">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <!--
+                La información se construye dinámicamente
+                a partir de la respuesta del backend.
+            -->
+            <div id="sale-details-content"
+                 class="sale-details-content">
+
+                Cargando detalles...
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--
+        Archivo JavaScript responsable de la lógica de la vista.
+        Se carga al final del body para que el HTML
+        esté disponible cuando se ejecute el script.
+    -->
+    <script th:src="@{/js/ventas.js}"></script>
+
+</body>
+
+</html>
