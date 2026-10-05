@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../models/ProductoModel.php';
+require_once __DIR__ . '/../models/VentaModel.php';
 
 /**==========================================================
  * DashboardController
@@ -21,6 +22,7 @@ class DashboardController
      * Modelo encargado de la gestión de productos.
      */
     private ProductoModel $productoModel;
+    private VentaModel $ventaModel;
 
     /**
      * Crea una nueva instancia del controlador e inicializa
@@ -29,6 +31,7 @@ class DashboardController
     public function __construct()
     {
         $this->productoModel = new ProductoModel();
+        $this->ventaModel    = new VentaModel();
     }
 
     /* ==========================================================
@@ -53,6 +56,24 @@ class DashboardController
     public function contarStockBajo(): int
     {
         return $this->productoModel->contarStockBajo();
+    }
+
+    /**
+     * Obtener el resumen histórico de ventas pagadas.
+     *
+     * Retorna la cantidad de ventas pagadas y los ingresos
+     * totales, calculados en una sola consulta.
+     *
+     * @return array{ventas_pagadas: int, ingresos_totales: float}
+     */
+    public function obtenerResumenVentas(): array
+    {
+        $metricas = $this->ventaModel->obtenerMetricas();
+
+        return [
+            'ventas_pagadas'   => $metricas['ventas_pagadas'],
+            'ingresos_totales' => $metricas['ingresos_totales'],
+        ];
     }
 
     /* ==========================================================

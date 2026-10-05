@@ -43,6 +43,9 @@ switch ($pagina) {
         $totalProductos = $dashboardController->contarProductos();
         $ultimosProductos = $dashboardController->listarUltimosProductos();
         $totalStockBajo = $dashboardController->contarStockBajo();
+        $resumenVentas  = $dashboardController->obtenerResumenVentas();
+        $totalVentas    = $resumenVentas['ventas_pagadas'];
+        $totalIngresos  = $resumenVentas['ingresos_totales'];
 
         $paginaActual = 'dashboard';
 

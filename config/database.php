@@ -25,7 +25,7 @@ class Database
     /**
      * Nombre de la base de datos.
      */
-    private static string $database = "confipym";
+    private static string $database = "confypim";
 
     /**
      * Usuario de la base de datos.

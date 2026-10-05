@@ -154,6 +154,7 @@ $jsPaginaFile = ROOT_PATH . "/assets/js/productos.js";
                             <h2>📦 Productos registrados</h2>
                             <p>
                                 Consulta los productos almacenados en el sistema.
+                                <span id="contadorProductos" class="contador-productos">...</span>
                             </p>
                         </div>
 

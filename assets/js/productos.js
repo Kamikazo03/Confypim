@@ -70,6 +70,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /**
      * ==========================================================
+     * Contador
+     * ==========================================================
+     */
+
+    function actualizarContador(total) {
+        const contador =
+            document.getElementById("contadorProductos");
+
+        if (!contador) {
+            return;
+        }
+
+        contador.textContent =
+            `${total} ${total === 1 ? "producto" : "productos"}`;
+    }
+
+    /**
+     * ==========================================================
      * Tabla
      * ==========================================================
      */
@@ -77,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderizarTabla(productos) {
         const contenedor =
             document.getElementById("tablaProductos");
+        actualizarContador(productos.length);
         if (productos.length === 0) {
             contenedor.innerHTML = `
                 <p class="empty-table">

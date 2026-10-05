@@ -525,6 +525,870 @@ th{
     color:#B7791F;
 }
 
+/* ==========================================================
+   MÓDULO VENTAS - COMPONENTES REACT
+   ==========================================================
+   Estilos del módulo de Ventas.
+   Se reutilizan los colores y variables de Confypim.
+   ========================================================== */
+
+/* ==========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================== */
+
+.ventas,
+.ventas-app {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ==========================================================
+   ENCABEZADO DE VENTAS
+   ========================================================== */
+
+.ventas-header-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.ventas-header-actions button {
+    min-height: 42px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary-dark);
+    color: #FFFFFF;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.ventas-header-actions button:hover {
+    background: var(--primary);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================
+   TARJETAS DE MÉTRICAS
+   ========================================================== */
+
+.ventas-metricas {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+}
+
+.venta-metrica-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    min-width: 0;
+    min-height: 135px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.venta-metrica-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .07);
+}
+
+.venta-metrica-card span {
+    color: #777777;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.venta-metrica-card strong {
+    color: var(--text);
+    font-size: clamp(19px, 2vw, 27px);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================================
+   FILTROS DE VENTAS
+   ========================================================== */
+
+.ventas-filtros {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+    align-items: end;
+    gap: 18px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+}
+
+.ventas-filtros .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.ventas-filtros label {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ventas-filtros input,
+.ventas-filtros select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+}
+
+.ventas-filtros input:focus,
+.ventas-filtros select:focus {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   TABLA DE VENTAS
+   ========================================================== */
+
+.ventas-tabla-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.ventas-tabla {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.ventas-tabla thead {
+    background: var(--primary-light);
+}
+
+.ventas-tabla th {
+    padding: 16px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ventas-tabla td {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.ventas-tabla tbody tr {
+    transition: background .2s ease;
+}
+
+.ventas-tabla tbody tr:hover {
+    background: rgba(246, 231, 238, .35);
+}
+
+/* ==========================================================
+   ESTADOS DE LAS VENTAS
+   ========================================================== */
+
+.venta-estado {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.venta-estado.pendiente {
+    background: #FFF0D5;
+    color: #8A5A00;
+}
+
+.venta-estado.pagada {
+    background: #DDF4E4;
+    color: #236B3A;
+}
+
+.venta-estado.cancelada {
+    background: #FDE5E5;
+    color: #A52626;
+}
+
+/* ==========================================================
+   ACCIONES DE LA TABLA
+   ========================================================== */
+
+.venta-fila-acciones {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.btn-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.btn-accion:hover {
+    border-color: var(--primary-dark);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.btn-accion:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   MENSAJES DE LA TABLA
+   ========================================================== */
+
+.ventas-tabla-mensaje {
+    padding: 30px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: #777777;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ==========================================================
+   MENSAJES DE ERROR
+   ========================================================== */
+
+.ventas-error {
+    padding: 14px 18px;
+    border: 1px solid #F1B8B8;
+    border-radius: 10px;
+    background: #FDECEC;
+    color: #A52626;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   MODAL DE DETALLE
+   ========================================================== */
+
+.modal-overlay,
+.venta-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, .45);
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 850px;
+    max-height: 90vh;
+    padding: 25px;
+    overflow-y: auto;
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    color: var(--text);
+    font-size: 22px;
+}
+
+.sale-detail-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
+    padding: 18px;
+    border-radius: 12px;
+    background: var(--primary-light);
+}
+
+.sale-detail-summary p {
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
+.modal-content h3 {
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: 17px;
+}
+
+.sale-detail-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    font-size: 18px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+/* ==========================================================
+   FORMULARIO DE VENTAS
+   ==========================================================
+   Estilos del modal utilizado para crear y editar ventas.
+   ========================================================== */
+   
+/* ==========================================================
+   FONDO DEL MODAL
+   ========================================================== */
+
+.venta-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.45);
+    overflow-y: auto;
+}
+
+/* ==========================================================
+   CONTENEDOR DEL FORMULARIO
+   ========================================================== */
+
+.venta-modal {
+    width: 100%;
+    max-width: 950px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+/* ==========================================================
+   ENCABEZADO DEL FORMULARIO
+   ========================================================== */
+
+.venta-formulario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+}
+
+.venta-formulario-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.venta-formulario-header p {
+    margin-top: 5px;
+    color: #7D7D7D;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   BOTÓN CERRAR
+   ========================================================== */
+
+.btn-cerrar {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, transform .2s ease; 
+}
+
+.btn-cerrar:hover {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.btn-cerrar:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   CUERPO DEL FORMULARIO
+   ========================================================== */
+
+.venta-formulario-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 28px;
+}
+
+/* ==========================================================
+   CAMPOS DEL FORMULARIO
+   ========================================================== */
+
+.venta-formulario-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.venta-formulario-body .form-group label {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.venta-formulario-body input,
+.venta-formulario-body select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.venta-formulario-body input:focus,
+.venta-formulario-body select:focus {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 2px;
+}
+
+.venta-formulario-body input[readonly],
+.venta-formulario-body select:disabled {
+    background: var(--primary-light);
+    cursor: default;
+}
+
+/* ==========================================================
+   SECCIÓN DE PRODUCTOS
+   ========================================================== */
+
+.venta-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #FCFAF8;
+}
+
+/* ==========================================================
+   ENCABEZADO DE PRODUCTOS
+   ========================================================== */
+
+.venta-productos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.venta-productos-header h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+}
+
+/* ==========================================================
+   LISTADO DE PRODUCTOS
+   ========================================================== */
+
+.venta-productos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ==========================================================
+   FILA DE PRODUCTO
+   ========================================================== */
+
+.venta-producto-row {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 2fr)
+        minmax(130px, 1fr)
+        minmax(100px, .8fr)
+        minmax(130px, 1fr)
+        auto;
+    align-items: end;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+}
+
+/* ==========================================================
+   BOTONES PRINCIPALES
+   ========================================================== */
+
+.btn-principal {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--primary-dark);
+    color: #FFFFFF;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.btn-principal:hover {
+    background: var(--secondary);
+    transform: translateY(-1px);
+}
+
+.btn-principal:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================
+   BOTONES SECUNDARIOS
+   ========================================================== */
+
+.btn-secundario {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.btn-secundario:hover {
+    background: var(--primary-light);
+}
+
+
+.btn-secundario:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   BOTONES DE ACCIÓN DE PRODUCTO
+   ========================================================== */
+
+.venta-producto-row .btn-accion {
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid #E0B8C7;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--primary-dark);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.venta-producto-row .btn-accion:hover {
+    background: var(--primary-light);
+}
+
+
+.venta-producto-row .btn-accion:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   MENSAJE DE ERROR
+   ========================================================== */
+
+.venta-formulario-body .ventas-error {
+    padding: 14px 18px;
+    border: 1px solid #F1B8B8;
+    border-radius: 10px;
+    background: #FDECEC;
+    color: #A52626;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   TOTAL DE LA VENTA
+   ========================================================== */
+
+.venta-formulario-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--text);
+    font-size: 18px;
+}
+
+
+.venta-formulario-total strong {
+    color: var(--primary-dark);
+    font-size: 20px;
+}
+
+
+/* ==========================================================
+   ACCIONES DEL FORMULARIO
+   ========================================================== */
+
+.venta-formulario-acciones {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding-top: 5px;
+}
+
+/* ==========================================================
+   STOCK DEL PRODUCTO EN EL FORMULARIO
+   ========================================================== */
+
+.venta-producto-stock {
+    display: block;
+    margin-top: 6px;
+    color: #7D7D7D;
+    font-size: 13px;
+}
+
+.venta-producto-stock strong {
+    color: var(--text);
+}
+
+/* ==========================================================
+   DISEÑO RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 1200px) {
+    .ventas-metricas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ventas-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ventas-header-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .ventas-metricas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .venta-metrica-card {
+        min-height: 115px;
+        padding: 16px;
+    }
+
+    .ventas-filtros {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .sale-detail-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        padding: 18px;
+    }
+
+    .sale-detail-total {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .ventas-metricas {
+        grid-template-columns: 1fr;
+    }
+
+    .ventas-header h1 {
+        font-size: 22px;
+    }
+
+    .btn-principal {
+        width: 100%;
+    }
+
+    .modal-overlay,
+    .venta-modal-overlay {
+        padding: 10px;
+    }
+}
+
+/* ==========================================================
+   RESPONSIVE DEL FORMULARIO
+   ========================================================== */
+
+@media (max-width: 900px) {
+    .venta-producto-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .venta-producto-row .btn-accion {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .venta-modal-overlay {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    .venta-modal {
+        max-height: 95vh;
+    }
+
+    .venta-formulario-header {
+        padding: 18px;
+    }
+
+    .venta-formulario-body {
+        padding: 18px;
+    }
+
+    .venta-productos {
+        padding: 14px;
+    }
+
+    .venta-productos-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .venta-producto-row {
+        grid-template-columns: 1fr;
+        padding: 14px;
+    }
+
+    .venta-formulario-total {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .venta-formulario-acciones {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .venta-formulario-acciones button {
+        width: 100%;
+    }
+}
 
 /* ==========================================================
    Responsive

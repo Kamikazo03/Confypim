@@ -42,6 +42,22 @@
 }
 
 /* ==========================================================
+   Contador de productos
+   ========================================================== */
+
+.contador-productos {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: #f8e1ea;
+    color: #b8527a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* ==========================================================
    Grupos del formulario
    ========================================================== */
 
