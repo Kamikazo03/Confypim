@@ -13,7 +13,13 @@ Head común del sistema
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title><?= isset($menu[$paginaActual]) ? $menu[$paginaActual]['tituloBrowser'] . ' | ' . APP_NAME : APP_NAME; ?></title>
+<?php $titulosEspeciales = ['login' => 'Iniciar sesión', 'register' => 'Crear cuenta', ];
+
+$tituloPagina = $titulosEspeciales[$paginaActual] ?? ($menu[$paginaActual]['tituloBrowser'] ?? null);
+
+$tituloNavegador = $tituloPagina !== null ? $tituloPagina . ' | ' . APP_NAME : APP_NAME; ?>
+
+<title><?= htmlspecialchars($tituloNavegador, ENT_QUOTES, 'UTF-8'); ?></title>
 
 <!-- =======================================================
     Hojas de estilo
@@ -24,6 +30,10 @@ Head común del sistema
 <link rel="stylesheet" href="<?= CSS_URL ?>forms.css?v=<?= filemtime(ROOT_PATH . '/assets/css/forms.css'); ?>">
 
 <link rel="stylesheet" href="<?= CSS_URL ?>notifications.css?v=<?= filemtime(ROOT_PATH . '/assets/css/notifications.css'); ?>">
+
+<link rel="stylesheet" href="<?= CSS_URL ?>auth.css?v=<?= filemtime(ROOT_PATH . '/assets/css/auth.css'); ?>">
+
+<link rel="stylesheet" href="<?= CSS_URL ?>perfil.css?v=<?= filemtime(ROOT_PATH . '/assets/css/perfil.css'); ?>">
 
 <!-- =======================================================
     Google Fonts

@@ -1,0 +1,311 @@
+/* ==========================================================
+   Login
+   ==========================================================
+ * Estilos correspondientes a las pantallas de autenticación.
+ * ========================================================== */
+
+/* ==========================================================
+   Página
+   ========================================================== */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background: #F8F5F2;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ==========================================================
+   Tarjeta
+   ========================================================== */
+
+.login-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 40px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================
+   Logo
+   ========================================================== */
+
+.login-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.login-logo img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+/* ==========================================================
+   Encabezado
+   ========================================================== */
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    margin: 0 0 8px;
+    color: #4A4A4A;
+    font-size: 28px;
+}
+
+.login-header p {
+    margin: 0;
+    color: #777777;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   Alerta
+   ========================================================== */
+
+.login-alert {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: #F6E7EE;
+    color: #A34E6F;
+    font-size: 13px;
+}
+
+/* ==========================================================
+   Formulario
+   ========================================================== */
+
+.login-field {
+    margin-bottom: 20px;
+}
+
+.login-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #4A4A4A;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ==========================================================
+   Input
+   ========================================================== */
+
+.login-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid #E2DCD8;
+    border-radius: 10px;
+    background: #FFFFFF;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.login-input:focus-within {
+    border-color: #D58BA6;
+    box-shadow: 0 0 0 3px rgba(213, 139, 166, 0.15);
+}
+
+.login-input i {
+    color: #B8896A;
+    font-size: 14px;
+}
+
+.login-input input {
+    width: 100%;
+    padding: 13px 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #4A4A4A;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   Mensaje
+   ========================================================== */
+
+.login-message {
+    margin-bottom: 18px;
+    padding: 11px 13px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.login-message-error {
+    background: #FCE8E8;
+    color: #A33A3A;
+}
+
+/* ==========================================================
+   Botón
+   ========================================================== */
+
+.login-button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #D58BA6;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.login-button:hover {
+    background: #C77997;
+    transform: translateY(-1px);
+}
+
+.login-button:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================
+   Pie
+   ========================================================== */
+
+.login-footer {
+    margin: 25px 0 0;
+    text-align: center;
+    color: #999999;
+    font-size: 12px;
+}
+
+/* ==========================================================
+   Responsive
+   ========================================================== */
+
+@media (max-width: 500px) {
+    .login-page {
+        padding: 20px;
+    }
+
+    .login-card {
+        padding: 30px 22px;
+    }
+}
+
+/* ==========================================================
+   Cerrar sesión
+========================================================== */
+
+.sidebar-footer {
+    margin-top: auto;
+}
+
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius);
+    color: #4A4A4A;
+    text-decoration:none;
+    transition: background .3s, transform .3s;
+}
+
+.logout-text {
+    color:#FFFFFF;
+}
+
+.logout-link:hover {
+    background: #F6E7EE;
+    color: #D58BA6;
+    transform:translateX(3px);
+}
+
+
+.logout-link > span:first-child {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:20px;
+    min-width:20px;
+}
+
+/* ==========================================================
+   CERRAR SESIÓN - SIDEBAR COLAPSADO
+   ========================================================== */
+
+.sidebar.collapsed .sidebar-footer {
+    width:100%;
+}
+
+.sidebar.collapsed .logout-link {
+    justify-content:center;
+    gap:0;
+}
+
+.sidebar.collapsed .logout-text{
+    display:none;
+}
+
+.sidebar.collapsed .logout-link > span:first-child {
+    width:auto;
+    min-width:auto;
+}
+
+
+/* ==========================================================
+   REGISTRO
+   ========================================================== */
+
+/**
+ * Enlaces compartidos entre Login y Registro.
+ */
+.login-footer a {
+    color: #D58BA6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+.login-footer a:hover {
+    color: #C77997;
+    text-decoration: underline;
+}
+
+/**
+ * Mensaje de registro exitoso.
+ */
+.register-message-success {
+    background: #E7F5E9;
+    color: #276738;
+}
+
+/**
+ * Evitar que el formulario quede demasiado ancho
+ * en pantallas pequeñas.
+ */
+@media (max-width: 500px) {
+    .login-card {
+        width: 100%;
+    }
+}

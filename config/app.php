@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -11,11 +10,39 @@ declare(strict_types=1);
  * variables compartidas por las vistas y preferencias de la
  * aplicación para que estén disponibles durante toda la
  * ejecución del proyecto.
+ *
+ * Inicializa las constantes globales, la configuración
+ * del menú y la sesión del usuario autenticado.
  * ==========================================================
  */
 
+/* ==========================================================
+ * CONFIGURACIÓN BASE
+ * ========================================================== */
+
 require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/menu.php';
+
+/* ==========================================================
+ * AUTENTICACIÓN
+ * ========================================================== */
+
+/**
+ * Cargar helper de autenticación.
+ */
+require_once ROOT_PATH . '/app/helpers/AuthHelper.php';
+
+/**
+ * Iniciar o mantener la sesión.
+ *
+ * AuthHelper se encarga de controlar:
+ * - Inicio de sesión
+ * - Tiempo de inactividad
+ * - Cookie de sesión
+ * - Regeneración
+ * - Estado de autenticación
+ */
+iniciarSesion();
 
 /* ==========================================================
  * INFORMACIÓN GENERAL
@@ -24,16 +51,33 @@ require_once __DIR__ . '/menu.php';
 /**
  * Nombre del sistema.
  */
-$nombreSistema = "Confipym";
+$nombreSistema = APP_NAME;
+
+/* ==========================================================
+ * SESIÓN DEL USUARIO
+ * ========================================================== */
 
 /**
- * Usuario autenticado.
- *
- * Temporalmente estos datos son estáticos.
- * Posteriormente serán obtenidos desde la sesión.
+ * Obtener información del usuario autenticado
+ * desde la sesión.
  */
-$nombreUsuario = "Kevin Medina";
-$rolUsuario = "Administrador";
+$usuarioSesion = obtenerUsuarioSesion();
+
+/**
+ * Nombre del usuario.
+ */
+$nombreUsuario = $usuarioSesion['nombre'] ?? 'Usuario';
+
+/**
+ * Rol del usuario.
+ */
+$rolUsuario = $usuarioSesion['rol'] ?? '';
+
+/**
+ * Foto de perfil.
+ *
+ * Actualmente Confipym no utiliza fotografías de usuario.
+ */
 $fotoPerfil = null;
 
 /* ==========================================================

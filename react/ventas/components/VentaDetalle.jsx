@@ -110,7 +110,7 @@ function VentaDetalle({
                     <div>
 
                         <h2>
-                            Venta #{venta.id_venta}
+                            Venta #{venta.numero_venta}
                         </h2>
 
                         <p>

@@ -3,41 +3,82 @@
 declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/models/VentaModel.php';
+require_once ROOT_PATH . '/app/helpers/AuthHelper.php';
 
 class VentaService
 {
     private VentaModel $ventaModel;
+
     private PDO $db;
 
     public function __construct()
     {
         $this->db = Database::connect();
-        $this->ventaModel = new VentaModel($this->db);
+
+        $this->ventaModel =
+            new VentaModel($this->db);
     }
 
     /**
      * Lista las ventas visibles.
+     *
+     * Cada administrador consulta únicamente
+     * sus propias ventas.
      */
     public function listarVentas(
         ?string $estado = null,
         ?string $busqueda = null
     ): array {
-        return $this->ventaModel->obtenerTodos($estado, $busqueda);
+
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        return $this->ventaModel->obtenerTodos(
+            $idUsuario,
+            $estado,
+            $busqueda
+        );
     }
 
     /**
      * Obtiene una venta completa.
+     *
+     * Solo permite consultar ventas pertenecientes
+     * al administrador autenticado.
      */
-    public function obtenerVenta(int $idVenta): array
-    {
+    public function obtenerVenta(
+        int $idVenta
+    ): array {
+
         if ($idVenta <= 0) {
-            throw new InvalidArgumentException('El identificador de la venta no es válido.');
+            throw new InvalidArgumentException(
+                'El identificador de la venta no es válido.'
+            );
         }
 
-        $venta = $this->ventaModel->obtenerCompleta($idVenta);
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        $venta =
+            $this->ventaModel->obtenerCompleta(
+                $idVenta,
+                $idUsuario
+            );
 
         if (!$venta) {
-            throw new RuntimeException('Venta no encontrada.');
+            throw new RuntimeException(
+                'Venta no encontrada.'
+            );
         }
 
         return $venta;
@@ -47,42 +88,92 @@ class VentaService
      * Crea una nueva venta.
      *
      * La venta se crea como Pendiente.
+     *
      * El stock NO se descuenta todavía.
+     *
+     * El usuario responsable se obtiene directamente
+     * desde la sesión del administrador autenticado.
+     *
+     * numero_venta se genera automáticamente como
+     * consecutivo independiente para cada administrador.
      */
-    public function crearVenta(array $datos): array
-    {
-        $idUsuario = (int) ($datos['id_usuario'] ?? 1);
-        $idCliente = isset($datos['id_cliente']) && $datos['id_cliente'] !== ''
-            ? (int) $datos['id_cliente']
-            : null;
+    public function crearVenta(
+        array $datos
+    ): array {
 
-        $fechaVenta = $this->normalizarFecha(
-            $datos['fecha_venta'] ?? null
-        );
+        /**
+         * El usuario NO se recibe desde React.
+         *
+         * Se obtiene directamente de la sesión para evitar
+         * que un cliente pueda enviar manualmente otro
+         * id_usuario.
+         */
+        $idUsuario = obtenerIdUsuarioSesion();
 
-        $detalles = $datos['detalles'] ?? [];
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        $idCliente =
+            isset($datos['id_cliente']) &&
+            $datos['id_cliente'] !== ''
+                ? (int) $datos['id_cliente']
+                : null;
+
+        $fechaVenta =
+            $this->normalizarFecha(
+                $datos['fecha_venta'] ?? null
+            );
+
+        $detalles =
+            $datos['detalles'] ?? [];
 
         $this->validarDatosGenerales(
             $idUsuario,
             $detalles
         );
 
-        $detallesPreparados = $this->prepararDetalles($detalles);
-
-        $total = $this->calcularTotal($detallesPreparados);
-
-        try {
-            $this->db->beginTransaction();
-
-            $idVenta = $this->ventaModel->crearVenta(
-                $fechaVenta,
-                $total,
-                $idUsuario,
-                $idCliente,
-                'Pendiente'
+        $detallesPreparados =
+            $this->prepararDetalles(
+                $detalles,
+                $idUsuario
             );
 
-            foreach ($detallesPreparados as $detalle) {
+        $total =
+            $this->calcularTotal(
+                $detallesPreparados
+            );
+
+        try {
+
+            $this->db->beginTransaction();
+
+            /**
+             * Obtiene el siguiente número correspondiente
+             * exclusivamente al administrador autenticado.
+             */
+            $numeroVenta =
+                $this->ventaModel
+                    ->obtenerSiguienteNumeroVenta(
+                        $idUsuario
+                    );
+
+            $idVenta =
+                $this->ventaModel->crearVenta(
+                    $fechaVenta,
+                    $total,
+                    $idUsuario,
+                    $numeroVenta,
+                    $idCliente,
+                    'Pendiente'
+                );
+
+            foreach (
+                $detallesPreparados as $detalle
+            ) {
+
                 $this->ventaModel->crearDetalle(
                     $idVenta,
                     $detalle['id_producto'],
@@ -94,7 +185,11 @@ class VentaService
 
             $this->db->commit();
 
-            return $this->ventaModel->obtenerCompleta($idVenta);
+            return $this->ventaModel
+                ->obtenerCompleta(
+                    $idVenta,
+                    $idUsuario
+                );
 
         } catch (Throwable $e) {
 
@@ -103,7 +198,8 @@ class VentaService
             }
 
             throw new RuntimeException(
-                'No fue posible crear la venta: ' . $e->getMessage(),
+                'No fue posible crear la venta: ' .
+                $e->getMessage(),
                 0,
                 $e
             );
@@ -113,57 +209,107 @@ class VentaService
     /**
      * Actualiza una venta pendiente.
      */
-    public function actualizarVenta(int $idVenta, array $datos): array
-    {
+    public function actualizarVenta(
+        int $idVenta,
+        array $datos
+    ): array {
+
         if ($idVenta <= 0) {
-            throw new InvalidArgumentException('El identificador de la venta no es válido.');
+            throw new InvalidArgumentException(
+                'El identificador de la venta no es válido.'
+            );
         }
 
-        $ventaActual = $this->ventaModel->obtenerPorId($idVenta);
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        /**
+         * obtenerPorId() también valida el usuario.
+         *
+         * Por lo tanto, un administrador no puede modificar
+         * una venta perteneciente a otro administrador.
+         */
+        $ventaActual =
+            $this->ventaModel->obtenerPorId(
+                $idVenta,
+                $idUsuario
+            );
 
         if (!$ventaActual) {
-            throw new RuntimeException('Venta no encontrada.');
+            throw new RuntimeException(
+                'Venta no encontrada.'
+            );
         }
 
-        if ($ventaActual['estado'] !== 'Pendiente') {
+        if (
+            $ventaActual['estado'] !==
+            'Pendiente'
+        ) {
             throw new RuntimeException(
                 'Solo se pueden modificar ventas que estén Pendientes.'
             );
         }
 
-        $idCliente = isset($datos['id_cliente']) && $datos['id_cliente'] !== ''
-            ? (int) $datos['id_cliente']
-            : null;
+        $idCliente =
+            isset($datos['id_cliente']) &&
+            $datos['id_cliente'] !== ''
+                ? (int) $datos['id_cliente']
+                : null;
 
-        $fechaVenta = $this->normalizarFecha(
-            $datos['fecha_venta'] ?? $ventaActual['fecha_venta']
-        );
+        $fechaVenta =
+            $this->normalizarFecha(
+                $datos['fecha_venta']
+                ?? $ventaActual['fecha_venta']
+            );
 
-        $detalles = $datos['detalles'] ?? [];
+        $detalles =
+            $datos['detalles'] ?? [];
 
-        if (!is_array($detalles) || count($detalles) === 0) {
+        if (
+            !is_array($detalles) ||
+            count($detalles) === 0
+        ) {
             throw new InvalidArgumentException(
                 'La venta debe contener al menos un producto.'
             );
         }
 
-        $detallesPreparados = $this->prepararDetalles($detalles);
+        $detallesPreparados =
+            $this->prepararDetalles(
+                $detalles,
+                $idUsuario
+            );
 
-        $total = $this->calcularTotal($detallesPreparados);
+        $total =
+            $this->calcularTotal(
+                $detallesPreparados
+            );
 
         try {
+
             $this->db->beginTransaction();
 
             $this->ventaModel->actualizarVenta(
                 $idVenta,
+                $idUsuario,
                 $fechaVenta,
                 $total,
                 $idCliente
             );
 
-            $this->ventaModel->eliminarDetalles($idVenta);
+            $this->ventaModel->eliminarDetalles(
+                $idVenta
+            );
 
-            foreach ($detallesPreparados as $detalle) {
+            foreach (
+                $detallesPreparados as $detalle
+            ) {
+
                 $this->ventaModel->crearDetalle(
                     $idVenta,
                     $detalle['id_producto'],
@@ -175,7 +321,11 @@ class VentaService
 
             $this->db->commit();
 
-            return $this->ventaModel->obtenerCompleta($idVenta);
+            return $this->ventaModel
+                ->obtenerCompleta(
+                    $idVenta,
+                    $idUsuario
+                );
 
         } catch (Throwable $e) {
 
@@ -184,7 +334,8 @@ class VentaService
             }
 
             throw new RuntimeException(
-                'No fue posible actualizar la venta: ' . $e->getMessage(),
+                'No fue posible actualizar la venta: ' .
+                $e->getMessage(),
                 0,
                 $e
             );
@@ -194,30 +345,54 @@ class VentaService
     /**
      * Marca una venta como Pagada y descuenta el stock.
      */
-    public function pagarVenta(int $idVenta): array
-    {
+    public function pagarVenta(
+        int $idVenta
+    ): array {
+
         if ($idVenta <= 0) {
             throw new InvalidArgumentException(
                 'El identificador de la venta no es válido.'
             );
         }
 
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
         try {
+
             $this->db->beginTransaction();
 
-            $venta = $this->ventaModel->obtenerPorId($idVenta);
+            $venta =
+                $this->ventaModel->obtenerPorId(
+                    $idVenta,
+                    $idUsuario
+                );
 
             if (!$venta) {
-                throw new RuntimeException('Venta no encontrada.');
+                throw new RuntimeException(
+                    'Venta no encontrada.'
+                );
             }
 
-            if ($venta['estado'] !== 'Pendiente') {
+            if (
+                $venta['estado'] !==
+                'Pendiente'
+            ) {
                 throw new RuntimeException(
                     'Solo se pueden pagar ventas que estén Pendientes.'
                 );
             }
 
-            $detalles = $this->ventaModel->obtenerDetalle($idVenta);
+            $detalles =
+                $this->ventaModel->obtenerDetalle(
+                    $idVenta,
+                    $idUsuario
+                );
 
             if (count($detalles) === 0) {
                 throw new RuntimeException(
@@ -225,33 +400,45 @@ class VentaService
                 );
             }
 
-            /*
+            /**
              * Primero verificamos todo el stock.
+             *
              * No descontamos parcialmente.
              */
             foreach ($detalles as $detalle) {
 
-                $producto = $this->ventaModel
-                    ->obtenerProductoParaActualizacion(
-                        (int) $detalle['id_producto']
-                    );
+                $producto =
+                    $this->ventaModel
+                        ->obtenerProductoParaActualizacion(
+                            (int) $detalle['id_producto'],
+                            $idUsuario
+                        );
 
                 if (!$producto) {
                     throw new RuntimeException(
-                        'El producto #' . $detalle['id_producto'] . ' no existe.'
+                        'El producto #' .
+                        $detalle['id_producto'] .
+                        ' no existe o no pertenece al usuario actual.'
                     );
                 }
 
-                if ((int) $producto['activo'] !== 1) {
+                if (
+                    (int) $producto['activo'] !==
+                    1
+                ) {
                     throw new RuntimeException(
-                        'El producto "' . $producto['nombre'] . '" está inactivo.'
+                        'El producto "' .
+                        $producto['nombre'] .
+                        '" está inactivo.'
                     );
                 }
 
                 if (
                     (int) $producto['stock_disponible']
-                    < (int) $detalle['cantidad']
+                    <
+                    (int) $detalle['cantidad']
                 ) {
+
                     throw new RuntimeException(
                         'Stock insuficiente para "' .
                         $producto['nombre'] .
@@ -264,16 +451,18 @@ class VentaService
                 }
             }
 
-            /*
+            /**
              * Si todo el stock está disponible,
              * ahora sí hacemos los descuentos.
              */
             foreach ($detalles as $detalle) {
 
-                $resultado = $this->ventaModel->descontarStock(
-                    (int) $detalle['id_producto'],
-                    (int) $detalle['cantidad']
-                );
+                $resultado =
+                    $this->ventaModel->descontarStock(
+                        (int) $detalle['id_producto'],
+                        $idUsuario,
+                        (int) $detalle['cantidad']
+                    );
 
                 if (!$resultado) {
                     throw new RuntimeException(
@@ -286,12 +475,17 @@ class VentaService
 
             $this->ventaModel->actualizarEstado(
                 $idVenta,
+                $idUsuario,
                 'Pagada'
             );
 
             $this->db->commit();
 
-            return $this->ventaModel->obtenerCompleta($idVenta);
+            return $this->ventaModel
+                ->obtenerCompleta(
+                    $idVenta,
+                    $idUsuario
+                );
 
         } catch (Throwable $e) {
 
@@ -300,7 +494,8 @@ class VentaService
             }
 
             throw new RuntimeException(
-                'No fue posible pagar la venta: ' . $e->getMessage(),
+                'No fue posible pagar la venta: ' .
+                $e->getMessage(),
                 0,
                 $e
             );
@@ -310,24 +505,43 @@ class VentaService
     /**
      * Cancela una venta pendiente.
      *
-     * No se agrega devolución de stock porque las ventas pendientes
-     * todavía no han descontado stock.
+     * No se agrega devolución de stock porque las ventas
+     * pendientes todavía no han descontado stock.
      */
-    public function cancelarVenta(int $idVenta): array
-    {
+    public function cancelarVenta(
+        int $idVenta
+    ): array {
+
         if ($idVenta <= 0) {
             throw new InvalidArgumentException(
                 'El identificador de la venta no es válido.'
             );
         }
 
-        $venta = $this->ventaModel->obtenerPorId($idVenta);
+        $idUsuario = obtenerIdUsuarioSesion();
 
-        if (!$venta) {
-            throw new RuntimeException('Venta no encontrada.');
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
         }
 
-        if ($venta['estado'] !== 'Pendiente') {
+        $venta =
+            $this->ventaModel->obtenerPorId(
+                $idVenta,
+                $idUsuario
+            );
+
+        if (!$venta) {
+            throw new RuntimeException(
+                'Venta no encontrada.'
+            );
+        }
+
+        if (
+            $venta['estado'] !==
+            'Pendiente'
+        ) {
             throw new RuntimeException(
                 'Solo se pueden cancelar ventas Pendientes.'
             );
@@ -335,24 +549,50 @@ class VentaService
 
         $this->ventaModel->actualizarEstado(
             $idVenta,
+            $idUsuario,
             'Cancelada'
         );
 
-        return $this->ventaModel->obtenerCompleta($idVenta);
+        return $this->ventaModel
+            ->obtenerCompleta(
+                $idVenta,
+                $idUsuario
+            );
     }
 
     /**
      * Obtiene las métricas del módulo.
+     *
+     * Las métricas corresponden únicamente
+     * al administrador autenticado.
      */
     public function obtenerMetricas(): array
     {
-        $metricas = $this->ventaModel->obtenerMetricas();
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        $metricas =
+            $this->ventaModel->obtenerMetricas(
+                $idUsuario
+            );
 
         $metricas['promedio_venta'] =
-            $this->ventaModel->obtenerPromedioVenta();
+            $this->ventaModel
+                ->obtenerPromedioVenta(
+                    $idUsuario
+                );
 
         return $metricas;
     }
+
+    /* ==========================================================
+     * VALIDACIONES
+     * ========================================================== */
 
     /**
      * Valida la información general.
@@ -368,7 +608,10 @@ class VentaService
             );
         }
 
-        if (!is_array($detalles) || count($detalles) === 0) {
+        if (
+            !is_array($detalles) ||
+            count($detalles) === 0
+        ) {
             throw new InvalidArgumentException(
                 'La venta debe contener al menos un producto.'
             );
@@ -378,9 +621,13 @@ class VentaService
     /**
      * Prepara y valida los productos de la venta.
      */
-    private function prepararDetalles(array $detalles): array
-    {
+    private function prepararDetalles(
+        array $detalles,
+        int $idUsuario
+    ): array {
+
         $resultado = [];
+
         $productosUsados = [];
 
         foreach ($detalles as $detalle) {
@@ -391,8 +638,17 @@ class VentaService
                 );
             }
 
-            $idProducto = (int) ($detalle['id_producto'] ?? 0);
-            $cantidad = (int) ($detalle['cantidad'] ?? 0);
+            $idProducto =
+                (int) (
+                    $detalle['id_producto']
+                    ?? 0
+                );
+
+            $cantidad =
+                (int) (
+                    $detalle['cantidad']
+                    ?? 0
+                );
 
             if ($idProducto <= 0) {
                 throw new InvalidArgumentException(
@@ -406,42 +662,83 @@ class VentaService
                 );
             }
 
-            if (isset($productosUsados[$idProducto])) {
+            if (
+                isset(
+                    $productosUsados[$idProducto]
+                )
+            ) {
                 throw new InvalidArgumentException(
                     'No se puede repetir el mismo producto dentro de la venta.'
                 );
             }
 
-            $producto = $this->ventaModel->obtenerProducto($idProducto);
+            /**
+             * IMPORTANTE:
+             *
+             * La consulta ahora exige que el producto
+             * pertenezca al administrador autenticado.
+             */
+            $producto =
+                $this->ventaModel
+                    ->obtenerProducto(
+                        $idProducto,
+                        $idUsuario
+                    );
 
             if (!$producto) {
                 throw new RuntimeException(
-                    'El producto #' . $idProducto . ' no existe.'
+                    'El producto #' .
+                    $idProducto .
+                    ' no existe o no pertenece al usuario actual.'
                 );
             }
 
-            if ((int) $producto['activo'] !== 1) {
+            if (
+                (int) $producto['activo'] !==
+                1
+            ) {
                 throw new RuntimeException(
-                    'El producto "' . $producto['nombre'] . '" está inactivo.'
+                    'El producto "' .
+                    $producto['nombre'] .
+                    '" está inactivo.'
                 );
             }
 
-            /*
+            /**
              * El precio se obtiene de la BD.
-             * El cliente no puede manipularlo desde JavaScript.
+             *
+             * El cliente no puede manipularlo
+             * desde JavaScript.
              */
-            $precioUnitario = (float) $producto['precio_unitario'];
+            $precioUnitario =
+                (float) $producto['precio_unitario'];
 
-            $subtotal = $precioUnitario * $cantidad;
+            $subtotal =
+                $precioUnitario *
+                $cantidad;
 
             $resultado[] = [
-                'id_producto' => $idProducto,
-                'cantidad' => $cantidad,
-                'precio_unitario' => round($precioUnitario, 2),
-                'subtotal' => round($subtotal, 2)
+                'id_producto' =>
+                    $idProducto,
+
+                'cantidad' =>
+                    $cantidad,
+
+                'precio_unitario' =>
+                    round(
+                        $precioUnitario,
+                        2
+                    ),
+
+                'subtotal' =>
+                    round(
+                        $subtotal,
+                        2
+                    )
             ];
 
-            $productosUsados[$idProducto] = true;
+            $productosUsados[$idProducto] =
+                true;
         }
 
         return $resultado;
@@ -450,12 +747,16 @@ class VentaService
     /**
      * Calcula el total de la venta.
      */
-    private function calcularTotal(array $detalles): float
-    {
+    private function calcularTotal(
+        array $detalles
+    ): float {
+
         $total = 0;
 
         foreach ($detalles as $detalle) {
-            $total += (float) $detalle['subtotal'];
+
+            $total +=
+                (float) $detalle['subtotal'];
         }
 
         return round($total, 2);
@@ -464,13 +765,16 @@ class VentaService
     /**
      * Normaliza la fecha recibida desde el frontend.
      */
-    private function normalizarFecha(?string $fecha): string
-    {
+    private function normalizarFecha(
+        ?string $fecha
+    ): string {
+
         if (!$fecha) {
             return date('Y-m-d H:i:s');
         }
 
-        $timestamp = strtotime($fecha);
+        $timestamp =
+            strtotime($fecha);
 
         if ($timestamp === false) {
             throw new InvalidArgumentException(
@@ -478,6 +782,9 @@ class VentaService
             );
         }
 
-        return date('Y-m-d H:i:s', $timestamp);
+        return date(
+            'Y-m-d H:i:s',
+            $timestamp
+        );
     }
 }

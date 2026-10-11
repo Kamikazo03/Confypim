@@ -20,12 +20,24 @@ declare(strict_types=1);
 /**
  * Nombre de la aplicación.
  */
-define('APP_NAME', 'Confipym');
+define('APP_NAME', 'Confypim');
 
 /**
  * Versión actual del sistema.
  */
 define('APP_VERSION', '1.0.1');
+
+/**
+ * Rol asignado a los usuarios durante el registro.
+ *
+ * IMPORTANTE:
+ * El rol se define en el servidor y no debe recibirse
+ * directamente desde el formulario de registro.
+ *
+ * Para cambiar el rol predeterminado en el futuro,
+ * sustituir 'administrador' por 'cliente'.
+ */
+define('DEFAULT_REGISTER_ROLE', 'administrador');
 
 /* ==========================================================
  * RUTAS DEL PROYECTO

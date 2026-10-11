@@ -101,6 +101,8 @@ body{
     top:0;
     height:100vh;
     flex-shrink:0;
+    display:flex;
+    flex-direction:column;
 }
 
 .logo{
@@ -119,6 +121,8 @@ body{
     cursor:pointer;
     margin-bottom:20px;
     margin-left:10px;
+    display:flex;
+    flex-direction:column;
 }
 
 /* ==========================================================
@@ -256,6 +260,8 @@ body{
     display:flex;
     align-items:center;
     gap:12px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .user-avatar{
@@ -271,6 +277,7 @@ body{
     font-weight:700;
     border:2px solid #FFFFFF;
     box-shadow:0 6px 15px rgba(213,139,166,.35);
+    transition: transform .2s ease;
 }
 
 .user-info{
@@ -286,6 +293,10 @@ body{
 .user-role{
     font-size:13px;
     color:#7A7A7A;
+}
+
+.user-card:hover .user-avatar {
+    transform: scale(1.08);
 }
 
 /* ==========================================================

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../models/ProductoModel.php';
 require_once __DIR__ . '/../models/VentaModel.php';
+require_once __DIR__ . '/../helpers/AuthHelper.php';
 
-/**==========================================================
+/**
+ * ==========================================================
  * DashboardController
  * ==========================================================
  * Controlador encargado de gestionar la información que se
@@ -14,7 +16,8 @@ require_once __DIR__ . '/../models/VentaModel.php';
  * Obtiene los indicadores principales del Dashboard y prepara
  * los listados resumidos, además coordina la información
  * proveniente de los modelos.
- * ==========================================================*/
+ * ==========================================================
+ */
 
 class DashboardController
 {
@@ -22,6 +25,10 @@ class DashboardController
      * Modelo encargado de la gestión de productos.
      */
     private ProductoModel $productoModel;
+
+    /**
+     * Modelo encargado de la gestión de ventas.
+     */
     private VentaModel $ventaModel;
 
     /**
@@ -30,6 +37,12 @@ class DashboardController
      */
     public function __construct()
     {
+        /**
+         * El Dashboard solo está disponible para
+         * administradores autenticados.
+         */
+        exigirAdministrador();
+
         $this->productoModel = new ProductoModel();
         $this->ventaModel    = new VentaModel();
     }
@@ -39,7 +52,8 @@ class DashboardController
      * ========================================================== */
 
     /**
-     * Obtener la cantidad total de productos.
+     * Obtener la cantidad total de productos
+     * del administrador autenticado.
      *
      * @return int
      */
@@ -49,7 +63,8 @@ class DashboardController
     }
 
     /**
-     * Obtener la cantidad de productos con stock bajo.
+     * Obtener la cantidad de productos con stock bajo
+     * del administrador autenticado.
      *
      * @return int
      */
@@ -59,7 +74,8 @@ class DashboardController
     }
 
     /**
-     * Obtener el resumen histórico de ventas pagadas.
+     * Obtener el resumen de ventas pagadas
+     * del administrador autenticado.
      *
      * Retorna la cantidad de ventas pagadas y los ingresos
      * totales, calculados en una sola consulta.
@@ -68,7 +84,17 @@ class DashboardController
      */
     public function obtenerResumenVentas(): array
     {
-        $metricas = $this->ventaModel->obtenerMetricas();
+        $idUsuario = obtenerIdUsuarioSesion();
+
+        if ($idUsuario === null) {
+            throw new RuntimeException(
+                'No existe un usuario autenticado.'
+            );
+        }
+
+        $metricas = $this->ventaModel->obtenerMetricas(
+            $idUsuario
+        );
 
         return [
             'ventas_pagadas'   => $metricas['ventas_pagadas'],
@@ -81,20 +107,24 @@ class DashboardController
      * ========================================================== */
 
     /**
-     * Obtener los últimos productos registrados.
+     * Obtener los últimos productos registrados
+     * por el administrador autenticado.
      *
      * @param int $limite
      * @return array
      */
     public function listarUltimosProductos(int $limite = 5): array
     {
-        $productos = $this->productoModel->obtenerUltimos($limite);
+        $productos = $this->productoModel->obtenerUltimos(
+            $limite
+        );
 
         foreach ($productos as &$producto) {
             $producto['estado'] = $this->obtenerEstadoStock(
                 (int)$producto['stock_disponible']
             );
         }
+
         unset($producto);
 
         return $productos;
@@ -119,8 +149,7 @@ class DashboardController
         if ($stock <= 5) {
             return 'Stock Bajo';
         }
-        
+
         return 'Disponible';
     }
-
 }

@@ -26,8 +26,24 @@ function VentaFila({
       DATOS DE LA VENTA
       ========================================================== */
 
+    /**
+     * Identificador interno de la venta.
+     *
+     * Este ID se utiliza para las operaciones internas
+     * y NO se muestra como número de venta al usuario.
+     */
     const idVenta =
         venta.id_venta;
+
+
+    /**
+     * Número visible de la venta.
+     *
+     * Este es el consecutivo correspondiente al
+     * administrador autenticado.
+     */
+    const numeroVenta =
+        venta.numero_venta;
 
 
     const cliente =
@@ -76,9 +92,11 @@ function VentaFila({
             );
 
 
-        if (Number.isNaN(
-            fechaObjeto.getTime()
-        )) {
+        if (
+            Number.isNaN(
+                fechaObjeto.getTime()
+            )
+        ) {
 
             return valor;
         }
@@ -127,9 +145,9 @@ function VentaFila({
 
         <tr>
 
-            {/* Identificador */}
+            {/* Número visible de la venta */}
             <td>
-                #{idVenta}
+                #{numeroVenta}
             </td>
 
 

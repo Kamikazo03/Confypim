@@ -121,6 +121,19 @@ $menu = [
     ],
 
     /* ==========================================================
+     * PERFIL
+     * ========================================================== */
+
+    "perfil" => [
+        "titulo"         => "Mi perfil",
+        "tituloBrowser"  => "Perfil",
+        "descripcion"    => "Administra tu información personal y la apariencia de tu cuenta.",
+        "icono"          => "⚙️",
+        "url"            => BASE_URL . "index.php?page=perfil",
+        "activo"         => false
+    ],
+
+    /* ==========================================================
      * MANTENIMIENTO
      * ========================================================== */
 
