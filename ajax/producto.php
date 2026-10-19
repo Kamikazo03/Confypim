@@ -110,6 +110,8 @@ try {
                     $datos
                 );
 
+            http_response_code($respuesta['success'] ? 201 : 400);
+
             echo json_encode(
                 $respuesta,
                 JSON_UNESCAPED_UNICODE |
@@ -149,6 +151,8 @@ try {
                 $controller->actualizarProducto(
                     $datos
                 );
+            
+            http_response_code($respuesta['success'] ? 200 : 404);
 
             echo json_encode(
                 $respuesta,
@@ -186,6 +190,8 @@ try {
                 $controller->desactivarProducto(
                     $id
                 );
+
+            http_response_code($respuesta['success'] ? 200 : 404);
 
             echo json_encode(
                 $respuesta,

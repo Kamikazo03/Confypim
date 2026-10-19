@@ -353,6 +353,8 @@ class ProductoModel
             ':id' => $datos['id_producto'],
             ':id_usuario' => $idUsuario
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 
     /* ==========================================================
@@ -391,5 +393,7 @@ class ProductoModel
             ':id' => $id,
             ':id_usuario' => $idUsuario
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 }

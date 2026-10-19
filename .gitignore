@@ -55,3 +55,21 @@ Thumbs.db
 # ==========================================
 
 /uploads/
+
+
+# ==========================================
+# CÓDIGOS DE PRUEBA
+# ==========================================
+
+test.php
+
+
+# ==========================================
+# PRUEBAS DE POSTMAN
+# ==========================================
+
+/postman/
+/.postman/
+*.postman_collection.json
+*.postman_environment.json
+*.postman_test_run.json

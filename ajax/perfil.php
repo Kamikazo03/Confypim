@@ -61,13 +61,6 @@ try {
         
         case 'encuadre':
             $resultado = $service->actualizarEncuadre($_POST);
-
-            echo json_encode([
-                'success' => true,
-                'mensaje' => 'Encuadre guardado correctamente.',
-                'data' => $resultado
-            ]);
-
             break;
 
         case 'eliminar-foto':

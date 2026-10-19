@@ -12,11 +12,13 @@ require_once dirname(__DIR__) . '/app/controllers/VentaController.php';
 iniciarSesion();
 exigirAdministradorAPI();
 
+/**
+ * Envía una respuesta JSON y termina la ejecución.
+ */
 function responder(
     array $respuesta,
     int $codigo = 200
 ): never {
-
     http_response_code($codigo);
 
     echo json_encode(
@@ -28,259 +30,192 @@ function responder(
     exit;
 }
 
+/**
+ * Lee y valida el cuerpo JSON de la solicitud.
+ */
 function obtenerJsonBody(): array
 {
-    $contenido =
-        file_get_contents('php://input');
+    $contenido = file_get_contents('php://input');
 
-    if (
-        $contenido === false ||
-        trim($contenido) === ''
-    ) {
+    if ($contenido === false || trim($contenido) === '') {
         return [];
     }
 
-    $datos =
-        json_decode(
-            $contenido,
-            true
-        );
+    $datos = json_decode($contenido, true);
 
-    if (
-        json_last_error() !==
-        JSON_ERROR_NONE
-    ) {
+    if (json_last_error() !== JSON_ERROR_NONE) {
         responder([
             'success' => false,
-            'message' =>
-                'El cuerpo JSON enviado no es válido.'
+            'message' => 'El cuerpo JSON enviado no es válido.'
         ], 400);
     }
 
-    return is_array($datos)
-        ? $datos
-        : [];
+    if (!is_array($datos)) {
+        responder([
+            'success' => false,
+            'message' => 'El cuerpo JSON debe ser un objeto o una lista válida.'
+        ], 400);
+    }
+
+    return $datos;
+}
+
+/**
+ * Valida que el ID recibido sea un entero positivo.
+ */
+function obtenerIdVentaDesdeSolicitud(): int
+{
+    if (!array_key_exists('id', $_GET)) {
+        responder([
+            'success' => false,
+            'message' => 'Debe indicar el id de la venta.'
+        ], 400);
+    }
+
+    $idRecibido = $_GET['id'];
+
+    if (
+        !is_string($idRecibido) ||
+        !ctype_digit($idRecibido) ||
+        (int) $idRecibido <= 0
+    ) {
+        responder([
+            'success' => false,
+            'message' => 'El ID de la venta no es válido.'
+        ], 400);
+    }
+
+    return (int) $idRecibido;
+}
+
+/**
+ * Responde usando el código HTTP indicado por el controlador.
+ */
+function responderResultado(
+    array $respuesta,
+    int $codigoExito = 200
+): never {
+    $codigo = $respuesta['success']
+        ? $codigoExito
+        : ($respuesta['http_status'] ?? 500);
+
+    responder($respuesta, $codigo);
 }
 
 try {
+    $controller = new VentaController();
 
-    $controller =
-        new VentaController();
-
-    $metodo =
-        $_SERVER['REQUEST_METHOD']
-        ?? 'GET';
+    $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
     switch ($metodo) {
-
-        /* ==========================================================
-         * GET
-         * ========================================================== */
-
+        /*
+         * GET: consultar métricas, una venta o listar ventas.
+         */
         case 'GET':
 
             if (
                 isset($_GET['accion']) &&
                 $_GET['accion'] === 'metricas'
             ) {
+                $respuesta = $controller->obtenerMetricas();
 
-                $respuesta =
-                    $controller->obtenerMetricas();
-
-                responder(
-                    $respuesta,
-                    $respuesta['success']
-                        ? 200
-                        : 500
-                );
+                responderResultado($respuesta);
             }
 
-            $idVenta =
-                isset($_GET['id'])
-                    ? (int) $_GET['id']
-                    : 0;
+            if (array_key_exists('id', $_GET)) {
+                $idVenta = obtenerIdVentaDesdeSolicitud();
 
-            if ($idVenta > 0) {
+                $respuesta = $controller->obtenerVenta($idVenta);
 
-                $respuesta =
-                    $controller->obtenerVenta(
-                        $idVenta
-                    );
-
-                responder(
-                    $respuesta,
-                    $respuesta['success']
-                        ? 200
-                        : 404
-                );
+                responderResultado($respuesta);
             }
 
-            $estado =
-                isset($_GET['estado'])
-                    ? trim(
-                        (string) $_GET['estado']
-                    )
-                    : null;
+            $estado = isset($_GET['estado'])
+                ? trim((string) $_GET['estado'])
+                : null;
 
-            $busqueda =
-                isset($_GET['busqueda'])
-                    ? trim(
-                        (string) $_GET['busqueda']
-                    )
-                    : null;
+            $busqueda = isset($_GET['busqueda'])
+                ? trim((string) $_GET['busqueda'])
+                : null;
 
-            $respuesta =
-                $controller->listarVentas(
-                    $estado,
-                    $busqueda
-                );
+            $respuesta = $controller->listarVentas(
+                $estado,
+                $busqueda
+            );
 
-            responder($respuesta);
+            responderResultado($respuesta);
 
-            break;
-
-        /* ==========================================================
-         * POST
-         * ========================================================== */
-
+        /*
+         * POST: crear una venta.
+         */
         case 'POST':
 
-            $datos =
-                obtenerJsonBody();
+            $datos = obtenerJsonBody();
 
-            $respuesta =
-                $controller->crearVenta(
-                    $datos
-                );
+            $respuesta = $controller->crearVenta($datos);
 
-            responder(
-                $respuesta,
-                $respuesta['success']
-                    ? 201
-                    : 400
-            );
+            responderResultado($respuesta, 201);
 
-            break;
-
-        /* ==========================================================
-         * PUT
-         * ========================================================== */
-
+        /*
+         * PUT: actualizar una venta pendiente.
+         */
         case 'PUT':
 
-            $idVenta =
-                isset($_GET['id'])
-                    ? (int) $_GET['id']
-                    : 0;
+            $idVenta = obtenerIdVentaDesdeSolicitud();
+            $datos = obtenerJsonBody();
 
-            if ($idVenta <= 0) {
-                responder([
-                    'success' => false,
-                    'message' =>
-                        'Debe indicar el id de la venta.'
-                ], 400);
-            }
-
-            $datos =
-                obtenerJsonBody();
-
-            $respuesta =
-                $controller->actualizarVenta(
-                    $idVenta,
-                    $datos
-                );
-
-            responder(
-                $respuesta,
-                $respuesta['success']
-                    ? 200
-                    : 400
+            $respuesta = $controller->actualizarVenta(
+                $idVenta,
+                $datos
             );
 
-            break;
+            responderResultado($respuesta);
 
-        /* ==========================================================
-         * PATCH
-         * ========================================================== */
-
+        /*
+         * PATCH: pagar o cancelar una venta.
+         */
         case 'PATCH':
 
-            $idVenta =
-                isset($_GET['id'])
-                    ? (int) $_GET['id']
-                    : 0;
+            $idVenta = obtenerIdVentaDesdeSolicitud();
 
-            $accion =
-                isset($_GET['accion'])
-                    ? strtolower(
-                        trim(
-                            (string) $_GET['accion']
-                        )
-                    )
-                    : '';
-
-            if ($idVenta <= 0) {
-                responder([
-                    'success' => false,
-                    'message' =>
-                        'Debe indicar el id de la venta.'
-                ], 400);
-            }
+            $accion = isset($_GET['accion'])
+                ? strtolower(trim((string) $_GET['accion']))
+                : '';
 
             if ($accion === 'pagar') {
-
-                $respuesta =
-                    $controller->pagarVenta(
-                        $idVenta
-                    );
-
+                $respuesta = $controller->pagarVenta($idVenta);
             } elseif ($accion === 'cancelar') {
-
-                $respuesta =
-                    $controller->cancelarVenta(
-                        $idVenta
-                    );
-
+                $respuesta = $controller->cancelarVenta($idVenta);
             } else {
-
                 responder([
                     'success' => false,
-                    'message' =>
-                        'Acción no válida. Use pagar o cancelar.'
+                    'message' => 'Acción no válida. Use pagar o cancelar.'
                 ], 400);
             }
 
-            responder(
-                $respuesta,
-                $respuesta['success']
-                    ? 200
-                    : 400
-            );
+            responderResultado($respuesta);
 
-            break;
-
-        /* ==========================================================
-         * MÉTODO NO PERMITIDO
-         * ========================================================== */
-
+        /*
+         * Cualquier otro método HTTP.
+         */
         default:
+
+            header('Allow: GET, POST, PUT, PATCH');
 
             responder([
                 'success' => false,
-                'message' =>
-                    'Método HTTP no permitido.'
+                'message' => 'Método HTTP no permitido.'
             ], 405);
     }
-
 } catch (Throwable $e) {
+    error_log(
+        'Error en ajax/venta.php: ' .
+        get_class($e) . ': ' .
+        $e->getMessage()
+    );
 
-    /**
-     * No exponemos detalles internos de PHP/MySQL
-     * al navegador.
-     */
     responder([
         'success' => false,
-        'message' =>
-            'Error interno del servidor.'
+        'message' => 'Error interno del servidor.'
     ], 500);
 }

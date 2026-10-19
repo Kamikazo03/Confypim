@@ -20,13 +20,20 @@ class VentaController
         ?string $estado = null,
         ?string $busqueda = null
     ): array {
-        return [
-            'success' => true,
-            'data' => $this->ventaService->listarVentas(
-                $estado,
-                $busqueda
-            )
-        ];
+        try {
+            return [
+                'success' => true,
+                'data' => $this->ventaService->listarVentas(
+                    $estado,
+                    $busqueda
+                )
+            ];
+        } catch (Throwable $e) {
+            return $this->manejarError(
+                $e,
+                'VentaController::listarVentas'
+            );
+        }
     }
 
     /**
@@ -35,18 +42,15 @@ class VentaController
     public function obtenerVenta(int $idVenta): array
     {
         try {
-
             return [
                 'success' => true,
                 'data' => $this->ventaService->obtenerVenta($idVenta)
             ];
-
         } catch (Throwable $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return $this->manejarError(
+                $e,
+                'VentaController::obtenerVenta'
+            );
         }
     }
 
@@ -56,19 +60,16 @@ class VentaController
     public function crearVenta(array $datos): array
     {
         try {
-
             return [
                 'success' => true,
                 'message' => 'Venta creada correctamente.',
                 'data' => $this->ventaService->crearVenta($datos)
             ];
-
         } catch (Throwable $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return $this->manejarError(
+                $e,
+                'VentaController::crearVenta'
+            );
         }
     }
 
@@ -80,7 +81,6 @@ class VentaController
         array $datos
     ): array {
         try {
-
             return [
                 'success' => true,
                 'message' => 'Venta actualizada correctamente.',
@@ -89,13 +89,11 @@ class VentaController
                     $datos
                 )
             ];
-
         } catch (Throwable $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return $this->manejarError(
+                $e,
+                'VentaController::actualizarVenta'
+            );
         }
     }
 
@@ -105,19 +103,16 @@ class VentaController
     public function pagarVenta(int $idVenta): array
     {
         try {
-
             return [
                 'success' => true,
                 'message' => 'Venta pagada correctamente.',
                 'data' => $this->ventaService->pagarVenta($idVenta)
             ];
-
         } catch (Throwable $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return $this->manejarError(
+                $e,
+                'VentaController::pagarVenta'
+            );
         }
     }
 
@@ -127,40 +122,70 @@ class VentaController
     public function cancelarVenta(int $idVenta): array
     {
         try {
-
             return [
                 'success' => true,
                 'message' => 'Venta cancelada correctamente.',
                 'data' => $this->ventaService->cancelarVenta($idVenta)
             ];
-
         } catch (Throwable $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return $this->manejarError(
+                $e,
+                'VentaController::cancelarVenta'
+            );
         }
     }
 
     /**
-     * Obtiene las métricas.
+     * Obtiene las métricas del módulo.
      */
     public function obtenerMetricas(): array
     {
         try {
-
             return [
                 'success' => true,
                 'data' => $this->ventaService->obtenerMetricas()
             ];
-
         } catch (Throwable $e) {
+            return $this->manejarError(
+                $e,
+                'VentaController::obtenerMetricas'
+            );
+        }
+    }
 
+    /**
+     * Convierte las excepciones en respuestas seguras.
+     */
+    private function manejarError(
+        Throwable $e,
+        string $operacion
+    ): array {
+        if ($e instanceof InvalidArgumentException) {
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'http_status' => 422
             ];
         }
+
+        if ($e instanceof VentaBusinessException) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'http_status' => $e->getHttpStatus()
+            ];
+        }
+
+        error_log(
+            $operacion . ': ' .
+            get_class($e) . ': ' .
+            $e->getMessage()
+        );
+
+        return [
+            'success' => false,
+            'message' => 'No fue posible procesar la solicitud.',
+            'http_status' => 500
+        ];
     }
 }
