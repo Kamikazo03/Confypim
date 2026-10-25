@@ -28,6 +28,12 @@ class VentaBusinessException extends RuntimeException
 
 class VentaService
 {
+    /**
+     * Zona horaria usada cuando la solicitud no indica una
+     * zona válida en el encabezado X-Timezone.
+     */
+    private const ZONA_HORARIA_PREDETERMINADA = 'America/Bogota';
+
     private VentaModel $ventaModel;
     private PDO $db;
 
@@ -106,10 +112,11 @@ class VentaService
             );
         }
 
-        $idCliente = isset($datos['id_cliente'])
-            && $datos['id_cliente'] !== ''
-                ? (int) $datos['id_cliente']
-                : null;
+        /*
+         * Si se envía un cliente, debe existir y tener
+         * el rol cliente. Sin cliente se usa "Cliente General".
+         */
+        $idCliente = $this->validarCliente($datos);
 
         $fechaVenta = $this->normalizarFecha(
             $datos['fecha_venta'] ?? null
@@ -161,6 +168,16 @@ class VentaService
                     $detalle['subtotal']
                 );
             }
+
+            /*
+             * Antes de confirmar, se verifica que todos los
+             * detalles hayan quedado guardados. Si no es así,
+             * se revierte la venta completa.
+             */
+            $this->verificarDetallesGuardados(
+                $idVenta,
+                count($detallesPreparados)
+            );
 
             $this->db->commit();
 
@@ -229,10 +246,11 @@ class VentaService
             );
         }
 
-        $idCliente = isset($datos['id_cliente'])
-            && $datos['id_cliente'] !== ''
-                ? (int) $datos['id_cliente']
-                : null;
+        /*
+         * Si se envía un cliente, debe existir y tener
+         * el rol cliente. Sin cliente se usa "Cliente General".
+         */
+        $idCliente = $this->validarCliente($datos);
 
         $fechaVenta = $this->normalizarFecha(
             $datos['fecha_venta'] ?? $ventaActual['fecha_venta']
@@ -280,6 +298,16 @@ class VentaService
                     $detalle['subtotal']
                 );
             }
+
+            /*
+             * Antes de confirmar, se verifica que todos los
+             * detalles hayan quedado guardados. Si no es así,
+             * se revierte la actualización completa.
+             */
+            $this->verificarDetallesGuardados(
+                $idVenta,
+                count($detallesPreparados)
+            );
 
             $this->db->commit();
 
@@ -657,11 +685,20 @@ class VentaService
 
     /**
      * Normaliza y valida la fecha de venta.
+     *
+     * Si no se envía fecha, se usa la fecha y hora actual en
+     * la zona horaria del usuario. Si se envía una fecha sin
+     * zona, se interpreta en la zona horaria del usuario; si
+     * incluye una zona (por ejemplo "-05:00" o "Z"), se
+     * convierte a la zona horaria del usuario.
      */
     private function normalizarFecha(mixed $fecha): string
     {
+        $zonaHoraria = $this->obtenerZonaHoraria();
+
         if ($fecha === null || $fecha === '') {
-            return date('Y-m-d H:i:s');
+            return (new DateTimeImmutable('now', $zonaHoraria))
+                ->format('Y-m-d H:i:s');
         }
 
         if (!is_string($fecha)) {
@@ -670,15 +707,146 @@ class VentaService
             );
         }
 
-        $timestamp = strtotime($fecha);
-
-        if ($timestamp === false) {
+        try {
+            $fechaNormalizada = new DateTimeImmutable(
+                $fecha,
+                $zonaHoraria
+            );
+        } catch (Exception $e) {
             throw new InvalidArgumentException(
                 'La fecha de venta no es válida.'
             );
         }
 
-        return date('Y-m-d H:i:s', $timestamp);
+        return $fechaNormalizada
+            ->setTimezone($zonaHoraria)
+            ->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Obtiene la zona horaria del usuario.
+     *
+     * El cliente (navegador, aplicación o Postman) la indica
+     * en el encabezado X-Timezone con un identificador IANA,
+     * por ejemplo "America/Bogota" o "America/Toronto".
+     *
+     * Si el encabezado no existe o no es una zona válida,
+     * se usa la zona horaria predeterminada del sistema.
+     */
+    private function obtenerZonaHoraria(): DateTimeZone
+    {
+        $zonaRecibida = $_SERVER['HTTP_X_TIMEZONE'] ?? null;
+
+        if (
+            is_string($zonaRecibida)
+            && in_array(
+                $zonaRecibida,
+                DateTimeZone::listIdentifiers(),
+                true
+            )
+        ) {
+            return new DateTimeZone($zonaRecibida);
+        }
+
+        return new DateTimeZone(self::ZONA_HORARIA_PREDETERMINADA);
+    }
+
+    /**
+     * Valida el cliente asociado a la venta.
+     *
+     * Reglas:
+     *  - Sin id_cliente (ausente, null o vacío): se usa
+     *    "Cliente General" y se retorna null.
+     *  - Con id_cliente: debe ser un entero positivo, existir
+     *    en la tabla usuario y tener el rol cliente.
+     *
+     * Todos los errores de esta validación responden 400.
+     *
+     * @return int|null ID del cliente validado o null.
+     */
+    private function validarCliente(array $datos): ?int
+    {
+        /*
+         * Venta sin cliente: se registra como Cliente General.
+         */
+        if (
+            !array_key_exists('id_cliente', $datos)
+            || $datos['id_cliente'] === null
+            || $datos['id_cliente'] === ''
+        ) {
+            return null;
+        }
+
+        $idRecibido = $datos['id_cliente'];
+
+        /*
+         * El identificador debe ser un entero positivo.
+         */
+        $esEntero = is_int($idRecibido)
+            || (is_string($idRecibido) && ctype_digit($idRecibido));
+
+        if (!$esEntero || (int) $idRecibido <= 0) {
+            throw new VentaBusinessException(
+                'Debe indicar un cliente existente.',
+                400
+            );
+        }
+
+        $idCliente = (int) $idRecibido;
+
+        /*
+         * El usuario debe existir en la base de datos.
+         */
+        $cliente = $this->ventaModel->obtenerUsuarioPorId(
+            $idCliente
+        );
+
+        if (!$cliente) {
+            throw new VentaBusinessException(
+                'Debe indicar un cliente existente.',
+                400
+            );
+        }
+
+        /*
+         * Solo se permiten usuarios con rol cliente;
+         * los administradores no pueden ser clientes de una venta.
+         */
+        if ($cliente['rol'] !== 'cliente') {
+            throw new VentaBusinessException(
+                'Debe indicar un usuario cliente válido.',
+                400
+            );
+        }
+
+        return $idCliente;
+    }
+
+    /**
+     * Verifica que la cantidad de detalles guardados coincida
+     * con la cantidad de productos de la venta.
+     *
+     * Debe ejecutarse dentro de la transacción: si falla,
+     * el catch del método llamador revierte todo y la API
+     * nunca deja una venta sin sus detalles.
+     */
+    private function verificarDetallesGuardados(
+        int $idVenta,
+        int $cantidadEsperada
+    ): void {
+        $guardados = $this->ventaModel->contarDetalles($idVenta);
+
+        if ($guardados !== $cantidadEsperada) {
+            throw new RuntimeException(
+                'La venta #' .
+                $idVenta .
+                ' no guardó todos sus detalles. Esperados: ' .
+                $cantidadEsperada .
+                ', guardados: ' .
+                $guardados .
+                '.'
+            );
+        }
     }
 
     /**

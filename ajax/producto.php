@@ -110,7 +110,8 @@ try {
                     $datos
                 );
 
-            http_response_code($respuesta['success'] ? 201 : 400);
+            http_response_code($respuesta['codigo'] ?? ($respuesta['success'] ? 201 : 400));
+            unset($respuesta['codigo']);
 
             echo json_encode(
                 $respuesta,
@@ -152,7 +153,8 @@ try {
                     $datos
                 );
             
-            http_response_code($respuesta['success'] ? 200 : 404);
+            http_response_code($respuesta['codigo'] ?? ($respuesta['success'] ? 200 : 404));
+            unset($respuesta['codigo']);
 
             echo json_encode(
                 $respuesta,
@@ -191,7 +193,8 @@ try {
                     $id
                 );
 
-            http_response_code($respuesta['success'] ? 200 : 404);
+            http_response_code($respuesta['codigo'] ?? ($respuesta['success'] ? 200 : 404));
+            unset($respuesta['codigo']);
 
             echo json_encode(
                 $respuesta,

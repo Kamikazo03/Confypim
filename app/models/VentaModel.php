@@ -226,6 +226,35 @@ class VentaModel
     }
 
     /**
+     * Cuenta los detalles guardados de una venta.
+     *
+     * Se utiliza dentro de la transacción de creación y
+     * actualización para comprobar que todos los productos
+     * de la venta quedaron registrados en detalle_venta.
+     *
+     * @param int $idVenta
+     * @return int
+     */
+    public function contarDetalles(
+        int $idVenta
+    ): int {
+
+        $sql = "
+            SELECT COUNT(*)
+            FROM detalle_venta
+            WHERE id_venta = :id_venta
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([
+            ':id_venta' => $idVenta
+        ]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
      * Obtiene una venta completa junto con sus detalles.
      *
      * @param int $idVenta
@@ -655,6 +684,45 @@ class VentaModel
         ]);
 
         return $stmt->rowCount() === 1;
+    }
+
+    /* ==========================================================
+     * CLIENTES
+     * ========================================================== */
+
+    /**
+     * Obtiene el identificador y el rol de un usuario.
+     *
+     * Se utiliza para validar que el id_cliente enviado
+     * en una venta exista y corresponda a un usuario con
+     * rol cliente. No se consulta información sensible.
+     *
+     * @param int $idUsuario
+     * @return array|null
+     */
+    public function obtenerUsuarioPorId(
+        int $idUsuario
+    ): ?array {
+
+        $sql = "
+            SELECT
+                id_usuario,
+                rol
+            FROM usuario
+            WHERE id_usuario = :id_usuario
+            LIMIT 1
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([
+            ':id_usuario' => $idUsuario
+        ]);
+
+        $usuario =
+            $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $usuario ?: null;
     }
 
     /* ==========================================================
