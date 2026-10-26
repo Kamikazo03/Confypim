@@ -346,10 +346,13 @@ class ProductoModel
         $stmt = $this->db->prepare($sql);
 
         return $stmt->execute([
+            ':nombre' => $datos['nombre'],
+            ':descripcion' => $datos['descripcion'],
+            ':precio' => $datos['precio_unitario'],
+            ':stock' => $datos['stock_disponible'],
             ':id' => $datos['id_producto'],
             ':id_usuario' => $idUsuario
         ]);
-
     }
 
     /* ==========================================================
