@@ -1,0 +1,70 @@
+# ==========================================
+# EDITORES Y SISTEMA OPERATIVO
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# ==========================================
+# VARIABLES Y CONFIGURACIÓN SENSIBLE
+# ==========================================
+.env
+.env.*
+!.env.example
+config/database.local.php
+config/secrets.php
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ==========================================
+# DEPENDENCIAS Y CACHÉS
+# ==========================================
+/vendor/
+/node_modules/
+
+# ==========================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ==========================================
+*.log
+/logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+~$*
+
+# ==========================================
+# ARCHIVOS GENERADOS POR USUARIOS
+# ==========================================
+/uploads/
+/assets/img/perfiles/*
+!/assets/img/perfiles/.gitkeep
+
+# ==========================================
+# ARCHIVOS DE PRUEBA LOCAL
+# ==========================================
+/test.php
+/phpinfo.php
+
+# ==========================================
+# ARCHIVOS DE GIT
+# ==========================================
+/postman/
+
+# ==========================================
+# POSTMAN: COLECCIONES Y CONFIGURACIÓN LOCAL
+# ==========================================
+.git/
+
+# ==========================================
+# ARCHIVOS DE DESARROLLO LOCAL
+# ==========================================
+*.local
+*.development

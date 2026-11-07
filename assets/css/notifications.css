@@ -1,0 +1,109 @@
+/* ==========================================================
+   Notificaciones
+   ==========================================================
+   Estilos para las notificaciones emergentes (Toast).
+
+   Incluye:
+   - Contenedor de notificaciones
+   - Tarjeta Toast
+   - Variantes de estado
+   - Animaciones
+   ========================================================== */
+
+/* ==========================================================
+   Contenedor de notificaciones
+   ========================================================== */
+
+.toast-container{
+    position:fixed;
+    top:25px;
+    right:25px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    z-index:9999;
+}
+
+/* ==========================================================
+   Tarjeta Toast
+   ========================================================== */
+
+.toast{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:330px;
+    max-width:420px;
+    padding:16px 20px;
+    background:var(--card);
+    color:var(--text);
+    border-left:6px solid var(--secondary);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    animation:toastIn .35s ease;
+}
+
+.toast i{
+    font-size:22px;
+}
+
+/* ==========================================================
+   Variantes
+   ========================================================== */
+
+.toast.success{
+    border-left-color:var(--secondary);
+}
+
+.toast.success i{
+    color:var(--secondary);
+}
+
+.toast.info{
+    border-left-color:var(--primary);
+}
+
+.toast.info i{
+    color:var(--primary);
+}
+
+.toast.warning{
+    border-left-color:#D8A64F;
+}
+
+.toast.warning i{
+    color:#D8A64F;
+}
+
+.toast.error{
+    border-left-color:#C96A6A;
+}
+
+.toast.error i{
+    color:#C96A6A;
+}
+
+/* ==========================================================
+   Mensaje
+   ========================================================== */
+
+.toast-message{
+    flex:1;
+    font-size:15px;
+    line-height:1.5;
+}
+
+/* ==========================================================
+   Animaciones
+   ========================================================== */
+
+@keyframes toastIn{
+    from{
+        opacity:0;
+        transform:translateX(80px);
+    }
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
