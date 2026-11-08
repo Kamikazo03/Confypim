@@ -61,6 +61,20 @@ declare(strict_types=1);
             </main>
 
             <!-- =======================================================
+                Configuración de la API para React
+            ======================================================== -->
+
+            <script>
+                window.CONFYPIM_BASE_URL = <?= json_encode(BASE_URL, JSON_UNESCAPED_SLASHES); ?>;
+            </script>
+
+            <!-- =======================================================
+                Carga del módulo React
+            ======================================================== -->
+
+            <script src="<?= BASE_URL ?>assets/react/ventas/ventas.iife.js"></script>
+
+            <!-- =======================================================
                 Carga del módulo React
             ======================================================== -->
 

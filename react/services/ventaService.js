@@ -21,8 +21,7 @@
  * Ruta principal del endpoint de Ventas.
  */
 const API_URL =
-    "/Confypim/ajax/venta.php";
-
+    `${window.CONFYPIM_BASE_URL}ajax/venta.php`;
 
 /* ==========================================================
   FUNCIÓN GENERAL DE PETICIONES

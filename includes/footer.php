@@ -30,8 +30,6 @@ Footer
 
 <script src="<?= JS_URL ?>notifications.js?v=<?= filemtime(ROOT_PATH . '/assets/js/notifications.js'); ?>"></script>
 
-<script src="<?= JS_URL ?>main.js?v=<?= filemtime(ROOT_PATH . '/assets/js/main.js'); ?>"></script>
-
 <script src="<?= JS_URL ?>preferences.js?v=<?= filemtime(ROOT_PATH . '/assets/js/preferences.js'); ?>"></script>
 
 <!-- ======================================================
