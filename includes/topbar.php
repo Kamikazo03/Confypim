@@ -1,8 +1,11 @@
-<?php
-/**
+<!-- ==================================================================
+Topbar
+==================================================================
  * Barra superior principal del sistema.
  * Muestra el título de la página y los datos del usuario autenticado.
- */
+====================================================================== -->
+
+<?php
 
 $usuarioSesion = $_SESSION['usuario'] ?? [];
 
@@ -25,11 +28,21 @@ if ($nombreMostrar === '') {
     $nombreMostrar = 'Usuario';
 }
 
-// Crear iniciales para cuando no exista un avatar seleccionado.
+// Crear iniciales para cuando no exista una fotografía ni un avatar seleccionado.
 $iniciales = strtoupper(
     mb_substr($primerNombre, 0, 1, 'UTF-8') .
     ($primerApellido !== '' ? mb_substr($primerApellido, 0, 1, 'UTF-8') : '')
 );
+
+// Obtener la fotografía de perfil guardada en la sesión.
+$fotoPerfil = (string) ($usuarioSesion['foto_perfil'] ?? '');
+
+// Obtener y validar la posición del encuadre guardada en la sesión.
+$posicionX = filter_var($usuarioSesion['foto_pos_x'] ?? 50,FILTER_VALIDATE_INT);
+$posicionY = filter_var($usuarioSesion['foto_pos_y'] ?? 50,FILTER_VALIDATE_INT);
+
+if ($posicionX === false || $posicionX < 0 || $posicionX > 100) {$posicionX = 50;}
+if ($posicionY === false || $posicionY < 0 || $posicionY > 100) {$posicionY = 50;}
 
 // Validar el nombre del archivo SVG antes de utilizarlo.
 $avatarSeleccionado = (string) ($usuarioSesion['avatar'] ?? '');
@@ -78,7 +91,13 @@ $rolMostrar = (string) ($usuarioSesion['rol'] ?? $rolUsuario ?? '');
             title="Ver perfil"
         >
             <div class="user-avatar">
-                <?php if ($avatarSeleccionado !== ''): ?>
+                <?php if ($fotoPerfil !== ''): ?>
+                    <img
+                        src="<?= BASE_URL; ?>ajax/perfil.php?accion=foto"
+                        alt="Fotografía de perfil"
+                        style="object-position: <?= $posicionX; ?>% <?= $posicionY; ?>%;"
+                    >
+                <?php elseif ($avatarSeleccionado !== ''): ?>
                     <img
                         src="<?= BASE_URL; ?>assets/img/avatars/<?= htmlspecialchars(
                             $avatarSeleccionado,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once ROOT_PATH . '/app/models/PerfilModel.php';
 require_once ROOT_PATH . '/app/helpers/AuthHelper.php';
+require_once ROOT_PATH . '/app/helpers/StorageHelper.php';
 
 /**
  * ==========================================================
@@ -178,9 +179,18 @@ class PerfilService
         }
 
         $tiposPermitidos = [
-            IMAGETYPE_JPEG => 'jpg',
-            IMAGETYPE_PNG => 'png',
-            IMAGETYPE_WEBP => 'webp'
+            IMAGETYPE_JPEG => [
+                'extension' => 'jpg',
+                'mime' => 'image/jpeg'
+            ],
+            IMAGETYPE_PNG => [
+                'extension' => 'png',
+                'mime' => 'image/png'
+            ],
+            IMAGETYPE_WEBP => [
+                'extension' => 'webp',
+                'mime' => 'image/webp'
+            ]
         ];
 
         $tipoImagen = $informacion[2];
@@ -191,24 +201,32 @@ class PerfilService
             );
         }
 
-        $directorio = ROOT_PATH . '/assets/img/perfiles';
-
-        if (
-            !is_dir($directorio) &&
-            !mkdir($directorio, 0755, true) &&
-            !is_dir($directorio)
-        ) {
+        // Comprueba el tipo MIME real del archivo recibido.
+        if (!class_exists('finfo')) {
             throw new RuntimeException(
-                'No se pudo preparar el directorio de fotografías.'
+                'La extensión Fileinfo de PHP no está disponible.'
             );
         }
 
-        $extension = $tiposPermitidos[$tipoImagen];
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $tipoMime = $finfo->file($rutaTemporal);
+
+        if ($tipoMime !== $tiposPermitidos[$tipoImagen]['mime']) {
+            throw new InvalidArgumentException(
+                'El contenido de la fotografía no coincide con su formato.'
+            );
+        }
+
+        $extension = $tiposPermitidos[$tipoImagen]['extension'];
 
         $nombreArchivo = 'perfil_' . $idUsuario . '_'
             . bin2hex(random_bytes(12)) . '.' . $extension;
 
-        $destino = $directorio . '/' . $nombreArchivo;
+        // Obtiene la ubicación física según el entorno de ejecución.
+        $destino = StorageHelper::obtenerRutaArchivo(
+            'perfiles',
+            $nombreArchivo
+        );
 
         if (!move_uploaded_file($rutaTemporal, $destino)) {
             throw new RuntimeException(
@@ -219,10 +237,15 @@ class PerfilService
         $usuarioAnterior = $this->model->obtenerPorId($idUsuario);
         $rutaAnterior = $usuarioAnterior['foto_perfil'] ?? null;
 
+        // Se conserva la referencia tradicional almacenada en MySQL.
         $rutaRelativa = 'assets/img/perfiles/' . $nombreArchivo;
 
         try {
-            $this->model->actualizarFoto($idUsuario, $rutaRelativa);
+            if (!$this->model->actualizarFoto($idUsuario, $rutaRelativa)) {
+                throw new RuntimeException(
+                    'No fue posible actualizar la fotografía en la base de datos.'
+                );
+            }
         } catch (Throwable $e) {
             if (is_file($destino)) {
                 unlink($destino);
@@ -244,6 +267,61 @@ class PerfilService
     }
 
     /**
+     * Obtiene la fotografía de perfil del usuario autenticado.
+     *
+     * Devuelve la ruta física y el tipo MIME para que el endpoint
+     * pueda entregar la imagen sin exponer su ubicación real.
+     */
+    public function obtenerFotoPerfil(): ?array
+    {
+        $idUsuario = $this->obtenerIdUsuario();
+
+        $usuario = $this->model->obtenerPorId($idUsuario);
+
+        if ($usuario === null || $usuario['rol'] !== 'administrador') {
+            throw new RuntimeException(
+                'No se encontró el perfil solicitado.'
+            );
+        }
+
+        $referencia = $usuario['foto_perfil'] ?? null;
+
+        if (!is_string($referencia) || $referencia === '') {
+            return null;
+        }
+
+        $rutaArchivo = $this->resolverRutaFoto($referencia);
+
+        if ($rutaArchivo === null || !is_file($rutaArchivo)) {
+            return null;
+        }
+
+        if (!class_exists('finfo')) {
+            throw new RuntimeException(
+                'La extensión Fileinfo de PHP no está disponible.'
+            );
+        }
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $tipoMime = $finfo->file($rutaArchivo);
+
+        $mimesPermitidos = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!in_array($tipoMime, $mimesPermitidos, true)) {
+            return null;
+        }
+
+        return [
+            'ruta' => $rutaArchivo,
+            'mime' => $tipoMime
+        ];
+    }
+
+    /**
      * Elimina la fotografía de perfil.
      */
     public function eliminarFoto(): array
@@ -253,7 +331,11 @@ class PerfilService
         $usuarioAnterior = $this->model->obtenerPorId($idUsuario);
         $rutaAnterior = $usuarioAnterior['foto_perfil'] ?? null;
 
-        $this->model->actualizarFoto($idUsuario, null);
+        if (!$this->model->actualizarFoto($idUsuario, null)) {
+            throw new RuntimeException(
+                'No fue posible eliminar la fotografía de la base de datos.'
+            );
+        }
 
         $usuario = $this->obtenerUsuarioActualizado($idUsuario);
 
@@ -366,33 +448,67 @@ class PerfilService
     }
 
     /**
+     * Resuelve la ruta física de una fotografía a partir de su referencia.
+     *
+     * La referencia almacenada en MySQL conserva el formato:
+     * assets/img/perfiles/nombre_archivo.jpg
+     *
+     * StorageHelper determina la ubicación física según el entorno.
+     */
+    private function resolverRutaFoto(string $referencia): ?string
+    {
+        $prefijoPermitido = 'assets/img/perfiles/';
+
+        if (!str_starts_with($referencia, $prefijoPermitido)) {
+            return null;
+        }
+
+        $nombreArchivo = substr(
+            $referencia,
+            strlen($prefijoPermitido)
+        );
+
+        if (
+            $nombreArchivo === '' ||
+            basename($nombreArchivo) !== $nombreArchivo ||
+            !preg_match(
+                '/^[a-zA-Z0-9_-]+\.(?:jpg|png|webp)$/i',
+                $nombreArchivo
+            )
+        ) {
+            return null;
+        }
+
+        return StorageHelper::obtenerRutaArchivo(
+            'perfiles',
+            $nombreArchivo
+        );
+    }
+
+    /**
      * Elimina una fotografía anterior de la carpeta permitida.
      */
     private function eliminarArchivoFotoAnterior(?string $ruta): void
     {
-        if (
-            !is_string($ruta) ||
-            !str_starts_with($ruta, 'assets/img/perfiles/')
-        ) {
+        if (!is_string($ruta) || $ruta === '') {
             return;
         }
 
-        $directorioPermitido = realpath(
-            ROOT_PATH . '/assets/img/perfiles'
-        );
+        try {
+            $archivo = $this->resolverRutaFoto($ruta);
 
-        $archivo = realpath(ROOT_PATH . '/' . $ruta);
-
-        if (
-            $directorioPermitido !== false &&
-            $archivo !== false &&
-            str_starts_with(
-                $archivo,
-                $directorioPermitido . DIRECTORY_SEPARATOR
-            ) &&
-            is_file($archivo)
-        ) {
-            unlink($archivo);
+            if ($archivo !== null && is_file($archivo)) {
+                if (!unlink($archivo)) {
+                    error_log(
+                        'Confypim - No se pudo eliminar la fotografía anterior.'
+                    );
+                }
+            }
+        } catch (Throwable $e) {
+            error_log(
+                'Confypim - No se pudo resolver la fotografía anterior: '
+                . $e->getMessage()
+            );
         }
     }
 }

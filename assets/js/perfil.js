@@ -21,6 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputNombre = document.getElementById('perfilNombre');
     const inputApellido = document.getElementById('perfilApellido');
 
+    /*
+    |--------------------------------------------------------------------------
+    | URL de la fotografía de perfil
+    |--------------------------------------------------------------------------
+    |
+    | La imagen se obtiene mediante el endpoint autenticado.
+    | El parámetro v evita mostrar una versión almacenada en caché.
+    |
+    */
+
+    function obtenerUrlFotoPerfil() {
+        return `${endpoint}?accion=foto&v=${Date.now()}`;
+    }
+
     const inputFoto = document.getElementById('perfilFotoArchivo');
     const fotoPreview = document.getElementById('perfilFotoPreview');
     const fotoPlaceholder = document.getElementById('perfilFotoPlaceholder');
@@ -45,6 +59,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let avatarActual = app.dataset.avatar || '';
+    let fotoPerfilActual = app.dataset.fotoPerfil === '1';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Posición del encuadre
+    |--------------------------------------------------------------------------
+    */
+
+    function obtenerPosicionEncuadre() {
+        const contenedor = document.getElementById('perfilFotoContenedor');
+
+        return {
+            x: Number(contenedor?.dataset.posicionX ?? 50),
+            y: Number(contenedor?.dataset.posicionY ?? 50)
+        };
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sincronizar encuadre con la barra superior
+    |--------------------------------------------------------------------------
+    |
+    | Aplica al topbar la misma posición que tiene la fotografía
+    | en la vista previa del perfil.
+    |
+    */
+
+    function actualizarEncuadreTopbar() {
+        const imagenTopbar = document.querySelector(
+            '.topbar .user-avatar img'
+        );
+
+        if (!imagenTopbar || !fotoPerfilActual) {
+            return;
+        }
+
+        const posicion = obtenerPosicionEncuadre();
+
+        imagenTopbar.style.objectPosition =
+            `${posicion.x}% ${posicion.y}%`;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -53,6 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     */
 
     function mostrarMensaje(texto, tipo = 'exito') {
+        if (!mensaje) {
+            return;
+        }
+
         mensaje.textContent = texto;
         mensaje.className = 'perfil-mensaje';
 
@@ -72,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
     */
 
     function obtenerIniciales() {
-        const nombre = inputNombre.value.trim().split(/\s+/)[0] || '';
-        const apellido = inputApellido.value.trim().split(/\s+/)[0] || '';
+        const nombre = inputNombre?.value.trim().split(/\s+/)[0] || '';
+        const apellido = inputApellido?.value.trim().split(/\s+/)[0] || '';
 
         return (
             (Array.from(nombre)[0] || '') +
@@ -82,8 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function obtenerNombreMostrar() {
-        const nombre = inputNombre.value.trim().split(/\s+/)[0] || '';
-        const apellido = inputApellido.value.trim().split(/\s+/)[0] || '';
+        const nombre = inputNombre?.value.trim().split(/\s+/)[0] || '';
+        const apellido = inputApellido?.value.trim().split(/\s+/)[0] || '';
 
         return `${nombre} ${apellido}`.trim() || 'Usuario';
     }
@@ -123,25 +182,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const iniciales = obtenerIniciales();
 
         // Actualizar la vista previa del perfil.
-        avatarPreview.replaceChildren();
+        if (avatarPreview) {
+            avatarPreview.replaceChildren();
 
-        if (avatarActual) {
-            const imagen = document.createElement('img');
-            imagen.src =
-                `${baseUrl}assets/img/avatars/${encodeURIComponent(avatarActual)}.svg`;
-            imagen.alt = 'Avatar seleccionado';
+            if (avatarActual) {
+                const imagen = document.createElement('img');
 
-            avatarPreview.appendChild(imagen);
+                imagen.src =
+                    `${baseUrl}assets/img/avatars/${encodeURIComponent(avatarActual)}.svg`;
 
-            avatarTexto.textContent = 'Tienes un avatar seleccionado.';
-            btnRestaurarIniciales.disabled = false;
-        } else {
-            avatarPreview.textContent = iniciales;
-            avatarTexto.textContent = 'Estás utilizando tus iniciales.';
-            btnRestaurarIniciales.disabled = true;
+                imagen.alt = 'Avatar seleccionado';
+
+                avatarPreview.appendChild(imagen);
+
+                if (avatarTexto) {
+                    avatarTexto.textContent = 'Tienes un avatar seleccionado.';
+                }
+
+                if (btnRestaurarIniciales) {
+                    btnRestaurarIniciales.disabled = false;
+                }
+
+            } else {
+                avatarPreview.textContent = iniciales;
+
+                if (avatarTexto) {
+                    avatarTexto.textContent = 'Estás utilizando tus iniciales.';
+                }
+
+                if (btnRestaurarIniciales) {
+                    btnRestaurarIniciales.disabled = true;
+                }
+            }
         }
 
-        // Actualizar el avatar de la topbar.
+        // Actualizar la imagen o el avatar de la topbar.
         const avatarTopbar = document.querySelector('.user-avatar');
 
         if (!avatarTopbar) {
@@ -150,7 +225,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         avatarTopbar.replaceChildren();
 
-        if (avatarActual) {
+        // La fotografía tiene prioridad sobre el avatar y las iniciales.
+        if (fotoPerfilActual) {
+            const imagen = document.createElement('img');
+
+            imagen.src = obtenerUrlFotoPerfil();
+            imagen.alt = `Fotografía de ${obtenerNombreMostrar()}`;
+
+            avatarTopbar.appendChild(imagen);
+
+            // Aplicar el encuadre actual de la fotografía.
+            actualizarEncuadreTopbar();
+
+        } else if (avatarActual) {
             const imagen = document.createElement('img');
 
             imagen.src =
@@ -159,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imagen.alt = `Avatar de ${obtenerNombreMostrar()}`;
 
             avatarTopbar.appendChild(imagen);
+
         } else {
             avatarTopbar.textContent = iniciales;
         }
@@ -205,61 +293,72 @@ document.addEventListener('DOMContentLoaded', () => {
     |--------------------------------------------------------------------------
     */
 
-    formPerfil.addEventListener('submit', async (evento) => {
-        evento.preventDefault();
+    if (formPerfil) {
+        formPerfil.addEventListener('submit', async (evento) => {
+            evento.preventDefault();
 
-        const datos = new FormData(formPerfil);
-        datos.append('accion', 'actualizar');
+            const datos = new FormData(formPerfil);
+            datos.append('accion', 'actualizar');
 
-        btnGuardar.disabled = true;
-        mostrarMensaje('');
-
-        try {
-            const resultado = await enviarSolicitud(datos);
-
-            // Usar los datos devueltos por el servidor.
-            if (resultado.usuario) {
-                inputNombre.value = resultado.usuario.nombre || '';
-                inputApellido.value = resultado.usuario.apellido || '';
-
-                const descripcion = document.getElementById(
-                    'perfilDescripcion'
-                );
-
-                if (descripcion) {
-                    descripcion.value = resultado.usuario.descripcion || '';
-                }
-
-                actualizarAvatarVisual(resultado.usuario.avatar || '');
+            if (btnGuardar) {
+                btnGuardar.disabled = true;
             }
 
-            actualizarNombreTopbar();
-
-            mostrarMensaje(
-                resultado.message || 'Perfil actualizado correctamente.'
-            );
-        } catch (error) {
-            mostrarMensaje(error.message, 'error');
-        } finally {
-            btnGuardar.disabled = false;
-        }
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Descartar cambios del formulario
-    |--------------------------------------------------------------------------
-    |
-    | El formulario vuelve a sus valores originales, pero el topbar
-    | conserva el nombre que ya estaba guardado.
-    |
-    */
-
-    formPerfil.addEventListener('reset', () => {
-        window.setTimeout(() => {
             mostrarMensaje('');
-        }, 0);
-    });
+
+            try {
+                const resultado = await enviarSolicitud(datos);
+
+                // Usar los datos devueltos por el servidor.
+                if (resultado.usuario) {
+                    inputNombre.value = resultado.usuario.nombre || '';
+                    inputApellido.value = resultado.usuario.apellido || '';
+
+                    const descripcion = document.getElementById(
+                        'perfilDescripcion'
+                    );
+
+                    if (descripcion) {
+                        descripcion.value = resultado.usuario.descripcion || '';
+                    }
+
+                    actualizarAvatarVisual(
+                        resultado.usuario.avatar || ''
+                    );
+                }
+
+                actualizarNombreTopbar();
+
+                mostrarMensaje(
+                    resultado.message || 'Perfil actualizado correctamente.'
+                );
+
+            } catch (error) {
+                mostrarMensaje(error.message, 'error');
+
+            } finally {
+                if (btnGuardar) {
+                    btnGuardar.disabled = false;
+                }
+            }
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Descartar cambios del formulario
+        |--------------------------------------------------------------------------
+        |
+        | El formulario vuelve a sus valores originales, pero el topbar
+        | conserva el nombre que ya estaba guardado.
+        |
+        */
+
+        formPerfil.addEventListener('reset', () => {
+            window.setTimeout(() => {
+                mostrarMensaje('');
+            }, 0);
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -267,80 +366,102 @@ document.addEventListener('DOMContentLoaded', () => {
     |--------------------------------------------------------------------------
     */
 
-    inputFoto.addEventListener('change', async () => {
-        const archivo = inputFoto.files[0];
+    if (inputFoto) {
+        inputFoto.addEventListener('change', async () => {
+            const archivo = inputFoto.files[0];
 
-        if (!archivo) {
-            return;
-        }
-
-        const tiposPermitidos = [
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ];
-
-        if (!tiposPermitidos.includes(archivo.type)) {
-            mostrarMensaje(
-                'Selecciona una imagen JPG, PNG o WebP.',
-                'error'
-            );
-
-            inputFoto.value = '';
-            return;
-        }
-
-        if (archivo.size <= 0 || archivo.size > 2 * 1024 * 1024) {
-            mostrarMensaje(
-                'La fotografía debe pesar más de 0 bytes y no superar los 2 MB.',
-                'error'
-            );
-
-            inputFoto.value = '';
-            return;
-        }
-
-        const datos = new FormData();
-        datos.append('accion', 'subir-foto');
-        datos.append('foto', archivo);
-
-        try {
-            mostrarMensaje('Subiendo fotografía...');
-
-            const resultado = await enviarSolicitud(datos);
-            const foto = resultado.usuario?.foto_perfil;
-
-            if (foto) {
-                fotoPreview.src = `${baseUrl}${foto}`;
-                fotoPreview.hidden = false;
-                fotoPlaceholder.hidden = true;
-                btnEliminarFoto.disabled = false;
+            if (!archivo) {
+                return;
             }
 
-            mostrarMensaje(resultado.message);
-        } catch (error) {
-            mostrarMensaje(error.message, 'error');
-        } finally {
-            inputFoto.value = '';
-        }
-    });
+            const tiposPermitidos = [
+                'image/jpeg',
+                'image/png',
+                'image/webp'
+            ];
+
+            if (!tiposPermitidos.includes(archivo.type)) {
+                mostrarMensaje(
+                    'Selecciona una imagen JPG, PNG o WebP.',
+                    'error'
+                );
+
+                inputFoto.value = '';
+                return;
+            }
+
+            if (archivo.size <= 0 || archivo.size > 2 * 1024 * 1024) {
+                mostrarMensaje(
+                    'La fotografía debe pesar más de 0 bytes y no superar los 2 MB.',
+                    'error'
+                );
+
+                inputFoto.value = '';
+                return;
+            }
+
+            const datos = new FormData();
+            datos.append('accion', 'subir-foto');
+            datos.append('foto', archivo);
+
+            try {
+                mostrarMensaje('Subiendo fotografía...');
+
+                const resultado = await enviarSolicitud(datos);
+                const foto = resultado.usuario?.foto_perfil;
+
+                if (foto) {
+                    // Actualizar la vista previa de la fotografía.
+                    if (fotoPreview) {
+                        fotoPreview.src = obtenerUrlFotoPerfil();
+                        fotoPreview.hidden = false;
+                    }
+
+                    if (fotoPlaceholder) {
+                        fotoPlaceholder.hidden = true;
+                    }
+
+                    if (btnEliminarFoto) {
+                        btnEliminarFoto.disabled = false;
+                    }
+
+                    // Actualizar el estado de la fotografía.
+                    fotoPerfilActual = true;
+                    app.dataset.fotoPerfil = '1';
+
+                    // Actualizar la fotografía de la barra superior.
+                    actualizarAvatarVisual(avatarActual);
+
+                    // Sincronizar el encuadre con la barra superior.
+                    actualizarEncuadreTopbar();
+                }
+
+                mostrarMensaje(resultado.message);
+
+            } catch (error) {
+                mostrarMensaje(error.message, 'error');
+
+            } finally {
+                inputFoto.value = '';
+            }
+        });
+    }
 
     // ==========================================================
     // Encuadre de la fotografía del perfil
     // ==========================================================
+
     (() => {
-        const app = document.getElementById('perfilApp');
         const contenedor = document.getElementById('perfilFotoContenedor');
         const imagen = document.getElementById('perfilFotoPreview');
 
-        if (!app || !contenedor || !imagen) {
+        if (!contenedor || !imagen) {
             console.warn(
-                'Encuadre: no se encontró perfilApp, perfilFotoContenedor o perfilFotoPreview.'
+                'Encuadre: no se encontró perfilFotoContenedor o perfilFotoPreview.'
             );
+
             return;
         }
-
-        const endpoint = app.dataset.endpoint;
 
         let posicionX = Number(contenedor.dataset.posicionX ?? 50);
         let posicionY = Number(contenedor.dataset.posicionY ?? 50);
@@ -355,8 +476,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function aplicarPosicion() {
             imagen.style.objectPosition = `${posicionX}% ${posicionY}%`;
+
             contenedor.dataset.posicionX = String(posicionX);
             contenedor.dataset.posicionY = String(posicionY);
+
+            // Actualizar el encuadre del topbar en tiempo real.
+            actualizarEncuadreTopbar();
         }
 
         function hayFotografia() {
@@ -454,6 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 console.info('Encuadre guardado:', posicionX, posicionY);
+
             } catch (error) {
                 console.error('Error al guardar el encuadre:', error);
             }
@@ -469,27 +595,43 @@ document.addEventListener('DOMContentLoaded', () => {
     |--------------------------------------------------------------------------
     */
 
-    btnEliminarFoto.addEventListener('click', async () => {
-        if (!window.confirm('¿Deseas eliminar tu fotografía de perfil?')) {
-            return;
-        }
+    if (btnEliminarFoto) {
+        btnEliminarFoto.addEventListener('click', async () => {
+            if (!window.confirm('¿Deseas eliminar tu fotografía de perfil?')) {
+                return;
+            }
 
-        const datos = new FormData();
-        datos.append('accion', 'eliminar-foto');
+            const datos = new FormData();
+            datos.append('accion', 'eliminar-foto');
 
-        try {
-            const resultado = await enviarSolicitud(datos);
+            try {
+                const resultado = await enviarSolicitud(datos);
 
-            fotoPreview.removeAttribute('src');
-            fotoPreview.hidden = true;
-            fotoPlaceholder.hidden = false;
-            btnEliminarFoto.disabled = true;
+                if (fotoPreview) {
+                    fotoPreview.removeAttribute('src');
+                    fotoPreview.hidden = true;
+                }
 
-            mostrarMensaje(resultado.message);
-        } catch (error) {
-            mostrarMensaje(error.message, 'error');
-        }
-    });
+                if (fotoPlaceholder) {
+                    fotoPlaceholder.hidden = false;
+                }
+
+                btnEliminarFoto.disabled = true;
+
+                // Actualizar el estado de la fotografía.
+                fotoPerfilActual = false;
+                app.dataset.fotoPerfil = '0';
+
+                // Volver a mostrar el avatar o las iniciales en la topbar.
+                actualizarAvatarVisual(avatarActual);
+
+                mostrarMensaje(resultado.message);
+
+            } catch (error) {
+                mostrarMensaje(error.message, 'error');
+            }
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -539,8 +681,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (avataresDisponibles.length === 0) {
             const aviso = document.createElement('p');
+
             aviso.textContent =
                 'No hay avatares disponibles en la carpeta de imágenes.';
+
             rejilla.appendChild(aviso);
         }
 
@@ -548,6 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const boton = document.createElement('button');
             boton.type = 'button';
             boton.className = 'perfil-avatar-option';
+
             boton.setAttribute(
                 'aria-pressed',
                 String(avatar === avatarActual)
@@ -558,8 +703,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const imagen = document.createElement('img');
+
             imagen.src =
                 `${baseUrl}assets/img/avatars/${encodeURIComponent(avatar)}.svg`;
+
             imagen.alt = `Avatar ${avatar}`;
 
             const texto = document.createElement('span');
@@ -581,6 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     mostrarMensaje(resultado.message);
                     modal.remove();
+
                 } catch (error) {
                     mostrarMensaje(error.message, 'error');
                 }
@@ -596,9 +744,11 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelar.type = 'button';
         cancelar.className = 'perfil-btn';
         cancelar.textContent = 'Cerrar';
+
         cancelar.addEventListener('click', () => modal.remove());
 
         pie.appendChild(cancelar);
+
         contenido.append(encabezado, descripcion, rejilla, pie);
         modal.appendChild(contenido);
 
@@ -613,16 +763,23 @@ document.addEventListener('DOMContentLoaded', () => {
         function cerrarConEscape(evento) {
             if (evento.key === 'Escape') {
                 modal.remove();
-                document.removeEventListener('keydown', cerrarConEscape);
+
+                document.removeEventListener(
+                    'keydown',
+                    cerrarConEscape
+                );
             }
         }
 
         document.addEventListener('keydown', cerrarConEscape);
+
         document.body.appendChild(modal);
         cerrar.focus();
     }
 
-    btnElegirAvatar.addEventListener('click', abrirModalAvatares);
+    if (btnElegirAvatar) {
+        btnElegirAvatar.addEventListener('click', abrirModalAvatares);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -630,20 +787,24 @@ document.addEventListener('DOMContentLoaded', () => {
     |--------------------------------------------------------------------------
     */
 
-    btnRestaurarIniciales.addEventListener('click', async () => {
-        const datos = new FormData();
-        datos.append('accion', 'avatar');
-        datos.append('avatar', '');
+    if (btnRestaurarIniciales) {
+        btnRestaurarIniciales.addEventListener('click', async () => {
+            const datos = new FormData();
+            datos.append('accion', 'avatar');
+            datos.append('avatar', '');
 
-        try {
-            const resultado = await enviarSolicitud(datos);
+            try {
+                const resultado = await enviarSolicitud(datos);
 
-            actualizarAvatarVisual('');
-            mostrarMensaje(resultado.message);
-        } catch (error) {
-            mostrarMensaje(error.message, 'error');
-        }
-    });
+                actualizarAvatarVisual('');
+
+                mostrarMensaje(resultado.message);
+
+            } catch (error) {
+                mostrarMensaje(error.message, 'error');
+            }
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------

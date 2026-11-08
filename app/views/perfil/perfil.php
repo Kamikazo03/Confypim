@@ -124,6 +124,7 @@ $avatarActualExiste = $avatarSeleccionado !== null
                 data-base-url="<?= htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>"
                 data-iniciales="<?= htmlspecialchars($iniciales, ENT_QUOTES, 'UTF-8'); ?>"
                 data-avatar="<?= htmlspecialchars($avatarActualExiste ? $avatarSeleccionado : '', ENT_QUOTES, 'UTF-8'); ?>"
+                data-foto-perfil="<?= !empty($fotoPerfil) ? '1' : '0'; ?>"
                 data-avatares="<?= htmlspecialchars(json_encode($avataresDisponibles), ENT_QUOTES, 'UTF-8'); ?>">
 
                 <section class="perfil-card">
@@ -141,40 +142,50 @@ $avatarActualExiste = $avatarSeleccionado !== null
 
                         <div class="perfil-foto-layout">
 
-                            <!--
-                                Contenedor de la fotografía.
-                                El JavaScript utiliza este ID para permitir
-                                arrastrar la imagen y modificar su encuadre.
-                            -->
+                            <!-- Contenedor de la fotografía y su encuadre -->
                             <div
                                 id="perfilFotoContenedor"
                                 class="perfil-foto-preview"
                                 data-posicion-x="<?= $posicionX; ?>"
                                 data-posicion-y="<?= $posicionY; ?>"
-                                title="<?= !empty($fotoPerfil) ? 'Arrastra la fotografía para ajustar su encuadre' : 'Sube una fotografía para ajustar su encuadre'; ?>">
+                                title="<?= !empty($fotoPerfil)
+                                    ? 'Arrastra la fotografía para ajustar su encuadre'
+                                    : 'Sube una fotografía para ajustar su encuadre'; ?>">
 
                                 <img
                                     id="perfilFotoPreview"
-                                    src="<?= !empty($fotoPerfil) ? htmlspecialchars(BASE_URL . $fotoPerfil, ENT_QUOTES, 'UTF-8') : ''; ?>"
+                                    src="<?= !empty($fotoPerfil)
+                                        ? htmlspecialchars(
+                                            BASE_URL . 'ajax/perfil.php?accion=foto',
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) . '&v=' . time()
+                                        : ''; ?>"
                                     alt="Fotografía de perfil"
                                     data-posicion-x="<?= $posicionX; ?>"
                                     data-posicion-y="<?= $posicionY; ?>"
                                     style="object-position: <?= $posicionX; ?>% <?= $posicionY; ?>%;"
                                     <?= empty($fotoPerfil) ? 'hidden' : ''; ?>>
 
-                                <i
+                                <!-- Mensaje mostrado cuando no existe fotografía -->
+                                <div
                                     id="perfilFotoPlaceholder"
-                                    class="fa-regular fa-image perfil-foto-placeholder"
-                                    aria-hidden="true"
-                                    <?= !empty($fotoPerfil) ? 'hidden' : ''; ?>></i>
+                                    class="perfil-foto-placeholder"
+                                    <?= !empty($fotoPerfil) ? 'hidden' : ''; ?>>
+
+                                    <i class="fa-regular fa-image"></i>
+
+                                    <span>Sin fotografía de perfil</span>
+
+                                </div>
 
                             </div>
 
                             <div class="perfil-foto-info">
 
                                 <p class="perfil-help-text">
-                                    Esta fotografía solo se mostrará en tu perfil.
-                                    No reemplaza el avatar de la barra superior.
+                                    Esta fotografía reemplazará el avatar en la barra superior.
+                                    Si deseas utilizar el avatar, elimina la foto.
                                 </p>
 
                                 <p class="perfil-help-text">
@@ -184,7 +195,7 @@ $avatarActualExiste = $avatarSeleccionado !== null
 
                                 <p class="perfil-help-text">
                                     Después de subir la fotografía, haz clic sobre ella
-                                    y arrástrala para ajustar el encuadre.
+                                    y arrástrala para ajustar su encuadre.
                                 </p>
 
                                 <div class="perfil-foto-actions">
@@ -256,7 +267,7 @@ $avatarActualExiste = $avatarSeleccionado !== null
 
                                 <p class="perfil-help-text">
                                     El avatar seleccionado aparecerá en la barra superior
-                                    en lugar de tus iniciales.
+                                    cuando no tengas una fotografía de perfil.
                                 </p>
 
                                 <div class="perfil-foto-actions">

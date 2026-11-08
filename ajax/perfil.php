@@ -16,6 +16,32 @@ try {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
     if ($metodo === 'GET') {
+
+        // Entregar la fotografía de perfil almacenada.
+        if (($_GET['accion'] ?? '') === 'foto') {
+            $foto = $service->obtenerFotoPerfil();
+
+            if ($foto === null) {
+                http_response_code(404);
+                exit;
+            }
+
+            // Limpiar cualquier salida previa antes de entregar la imagen.
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            header('Content-Type: ' . $foto['mime']);
+            header('Content-Length: ' . filesize($foto['ruta']));
+            header('Content-Disposition: inline');
+            header('Cache-Control: private, no-store, max-age=0');
+            header('X-Content-Type-Options: nosniff');
+
+            readfile($foto['ruta']);
+            exit;
+        }
+
+        // Consulta normal del perfil.
         echo json_encode([
             'success' => true,
             'data' => $service->obtenerPerfil()

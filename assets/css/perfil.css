@@ -204,6 +204,26 @@
     display: none !important;
 }
 
+/* El mensaje llena el cuadrado sin deformarse. */
+.perfil-foto-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    color: var(--secondary, #B8896A);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Tamaño de la letra. */
+.perfil-foto-placeholder i {
+    font-size: 32px;
+}
+
 /* Avatar */
 
 .perfil-avatar-layout {
