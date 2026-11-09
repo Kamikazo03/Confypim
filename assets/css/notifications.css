@@ -8,6 +8,7 @@
    - Tarjeta Toast
    - Variantes de estado
    - Animaciones
+   - Responsive
    ========================================================== */
 
 /* ==========================================================
@@ -16,7 +17,7 @@
 
 .toast-container{
     position:fixed;
-    top:25px;
+    top:calc(25px + env(safe-area-inset-top, 0px));
     right:25px;
     display:flex;
     flex-direction:column;
@@ -33,7 +34,7 @@
     align-items:center;
     gap:14px;
     min-width:330px;
-    max-width:420px;
+    max-width:min(420px, calc(100vw - 50px));
     padding:16px 20px;
     background:var(--card);
     color:var(--text);
@@ -45,6 +46,7 @@
 
 .toast i{
     font-size:22px;
+    flex-shrink:0;
 }
 
 /* ==========================================================
@@ -89,8 +91,10 @@
 
 .toast-message{
     flex:1;
+    min-width:0;
     font-size:15px;
     line-height:1.5;
+    overflow-wrap:anywhere;
 }
 
 /* ==========================================================
@@ -105,5 +109,30 @@
     to{
         opacity:1;
         transform:translateX(0);
+    }
+}
+
+/* ==========================================================
+   Responsive
+   ========================================================== */
+
+@media (max-width:600px){
+
+    /* El toast ocupa el ancho disponible en lugar de 330px fijos */
+    .toast-container{
+        top:calc(12px + env(safe-area-inset-top, 0px));
+        right:12px;
+        left:12px;
+    }
+
+    .toast{
+        min-width:0;
+        max-width:none;
+        width:100%;
+        padding:14px 16px;
+    }
+
+    .toast-message{
+        font-size:14px;
     }
 }

@@ -1,5 +1,5 @@
 /* ==========================================================
-   Login
+   Login y Registro
    ==========================================================
  * Estilos correspondientes a las pantallas de autenticación.
  * ========================================================== */
@@ -10,6 +10,7 @@
 
 .login-page {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,6 +130,7 @@
 
 .login-input input {
     width: 100%;
+    min-width: 0;
     padding: 13px 0;
     border: none;
     outline: none;
@@ -139,7 +141,7 @@
 }
 
 /* ==========================================================
-   Mensaje
+   Mensajes
    ========================================================== */
 
 .login-message {
@@ -152,6 +154,12 @@
 .login-message-error {
     background: #FCE8E8;
     color: #A33A3A;
+}
+
+/* Mensaje de registro exitoso */
+.register-message-success {
+    background: #E7F5E9;
+    color: #276738;
 }
 
 /* ==========================================================
@@ -186,7 +194,7 @@
 }
 
 /* ==========================================================
-   Pie
+   Pie (compartido entre Login y Registro)
    ========================================================== */
 
 .login-footer {
@@ -194,6 +202,79 @@
     text-align: center;
     color: #999999;
     font-size: 12px;
+}
+
+.login-footer a {
+    color: #D58BA6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+.login-footer a:hover {
+    color: #C77997;
+    text-decoration: underline;
+}
+
+/* ==========================================================
+   Cerrar sesión (sidebar)
+   ==========================================================
+   Nota: estas reglas pertenecen a la sidebar y podrían vivir
+   en styles.css. Se dejan aquí para no romper nada.
+   ========================================================== */
+
+.sidebar-footer {
+    margin-top: auto;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius);
+    color: #4A4A4A;
+    text-decoration: none;
+    transition: background .3s, transform .3s;
+}
+
+.logout-text {
+    color: #FFFFFF;
+}
+
+.logout-link:hover {
+    background: #F6E7EE;
+    color: #D58BA6;
+    transform: translateX(3px);
+}
+
+.logout-link > span:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    min-width: 20px;
+}
+
+/* Sidebar colapsado */
+
+.sidebar.collapsed .sidebar-footer {
+    width: 100%;
+}
+
+.sidebar.collapsed .logout-link {
+    justify-content: center;
+    gap: 0;
+}
+
+.sidebar.collapsed .logout-text {
+    display: none;
+}
+
+.sidebar.collapsed .logout-link > span:first-child {
+    width: auto;
+    min-width: auto;
 }
 
 /* ==========================================================
@@ -208,104 +289,18 @@
     .login-card {
         padding: 30px 22px;
     }
-}
 
-/* ==========================================================
-   Cerrar sesión
-========================================================== */
+    .login-header h1 {
+        font-size: 24px;
+    }
 
-.sidebar-footer {
-    margin-top: auto;
-}
+    .login-logo img {
+        width: 76px;
+        height: 76px;
+    }
 
-
-.logout-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 10px;
-    border-radius: var(--radius);
-    color: #4A4A4A;
-    text-decoration:none;
-    transition: background .3s, transform .3s;
-}
-
-.logout-text {
-    color:#FFFFFF;
-}
-
-.logout-link:hover {
-    background: #F6E7EE;
-    color: #D58BA6;
-    transform:translateX(3px);
-}
-
-
-.logout-link > span:first-child {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    width:20px;
-    min-width:20px;
-}
-
-/* ==========================================================
-   CERRAR SESIÓN - SIDEBAR COLAPSADO
-   ========================================================== */
-
-.sidebar.collapsed .sidebar-footer {
-    width:100%;
-}
-
-.sidebar.collapsed .logout-link {
-    justify-content:center;
-    gap:0;
-}
-
-.sidebar.collapsed .logout-text{
-    display:none;
-}
-
-.sidebar.collapsed .logout-link > span:first-child {
-    width:auto;
-    min-width:auto;
-}
-
-
-/* ==========================================================
-   REGISTRO
-   ========================================================== */
-
-/**
- * Enlaces compartidos entre Login y Registro.
- */
-.login-footer a {
-    color: #D58BA6;
-    font-weight: 600;
-    text-decoration: none;
-    transition: color .2s ease;
-}
-
-.login-footer a:hover {
-    color: #C77997;
-    text-decoration: underline;
-}
-
-/**
- * Mensaje de registro exitoso.
- */
-.register-message-success {
-    background: #E7F5E9;
-    color: #276738;
-}
-
-/**
- * Evitar que el formulario quede demasiado ancho
- * en pantallas pequeñas.
- */
-@media (max-width: 500px) {
-    .login-card {
-        width: 100%;
+    /* 16px evita el zoom automático de iOS al enfocar un campo */
+    .login-input input {
+        font-size: 16px;
     }
 }
