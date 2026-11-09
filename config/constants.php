@@ -25,7 +25,7 @@ define('APP_NAME', 'Confypim');
 /**
  * Versión actual del sistema.
  */
-define('APP_VERSION', '1.0.1');
+define('APP_VERSION', '1.0.2');
 
 /**
  * Rol asignado a los usuarios durante el registro.

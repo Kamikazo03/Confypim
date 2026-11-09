@@ -36,6 +36,25 @@ Head común del sistema
     })();
 </script>
 
+<!-- =======================================================
+    Identidad visual y favicon de Confypim
+    Los archivos se almacenan en assets/img/favicon/.
+    Se utiliza APP_VERSION para actualizar la caché cuando
+    se publique una nueva versión del icono.
+======================================================== -->
+
+<link rel="icon" type="image/x-icon" href="<?= IMG_URL ?>favicon/favicon.ico?v=<?= APP_VERSION; ?>">
+
+<link rel="icon" type="image/png" sizes="16x16" href="<?= IMG_URL ?>favicon/favicon-16x16.png?v=<?= APP_VERSION; ?>">
+
+<link rel="icon" type="image/png" sizes="32x32" href="<?= IMG_URL ?>favicon/favicon-32x32.png?v=<?= APP_VERSION; ?>">
+
+<link rel="apple-touch-icon" sizes="180x180" href="<?= IMG_URL ?>favicon/apple-touch-icon.png?v=<?= APP_VERSION; ?>">
+
+<link rel="manifest" href="<?= BASE_URL ?>site.webmanifest?v=<?= APP_VERSION; ?>">
+
+<meta name="theme-color" content="#F8F5F2">
+
 <?php $titulosEspeciales = ['login' => 'Iniciar sesión', 'register' => 'Crear cuenta', ];
 
 $tituloPagina = $titulosEspeciales[$paginaActual] ?? ($menu[$paginaActual]['tituloBrowser'] ?? null);
