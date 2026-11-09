@@ -43,6 +43,9 @@ $iniciales = mb_strtoupper(
 );
 
 $fotoPerfil = $perfil['foto_perfil'] ?? null;
+$versionFotoPerfil = is_string($fotoPerfil) && $fotoPerfil !== ''
+    ? basename($fotoPerfil)
+    : '';
 $avatarSeleccionado = $perfil['avatar'] ?? null;
 
 /*
@@ -125,6 +128,7 @@ $avatarActualExiste = $avatarSeleccionado !== null
                 data-iniciales="<?= htmlspecialchars($iniciales, ENT_QUOTES, 'UTF-8'); ?>"
                 data-avatar="<?= htmlspecialchars($avatarActualExiste ? $avatarSeleccionado : '', ENT_QUOTES, 'UTF-8'); ?>"
                 data-foto-perfil="<?= !empty($fotoPerfil) ? '1' : '0'; ?>"
+                data-foto-version="<?= htmlspecialchars($versionFotoPerfil, ENT_QUOTES, 'UTF-8'); ?>"
                 data-avatares="<?= htmlspecialchars(json_encode($avataresDisponibles), ENT_QUOTES, 'UTF-8'); ?>">
 
                 <section class="perfil-card">
@@ -156,10 +160,10 @@ $avatarActualExiste = $avatarSeleccionado !== null
                                     id="perfilFotoPreview"
                                     src="<?= !empty($fotoPerfil)
                                         ? htmlspecialchars(
-                                            BASE_URL . 'ajax/perfil.php?accion=foto',
+                                            BASE_URL . 'ajax/perfil.php?accion=foto&v=' . rawurlencode($versionFotoPerfil),
                                             ENT_QUOTES,
                                             'UTF-8'
-                                        ) . '&v=' . time()
+                                        ) 
                                         : ''; ?>"
                                     alt="Fotografía de perfil"
                                     data-posicion-x="<?= $posicionX; ?>"

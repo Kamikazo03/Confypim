@@ -319,6 +319,11 @@ html.sidebar-ready .sidebar{
     object-fit:cover;
 }
 
+/* Evita mostrar el fondo rosado mientras carga la fotografía de perfil. */
+.user-avatar.has-photo{
+    background:#F1F1F1;
+}
+
 .user-info{
     display:flex;
     flex-direction:column;

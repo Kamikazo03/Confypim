@@ -26,15 +26,43 @@ try {
                 exit;
             }
 
+            // Comprobar que la versión solicitada corresponde a la fotografía actual.
+            $versionSolicitada = $_GET['v'] ?? '';
+            $versionActual = basename($foto['ruta']);
+
+            if (
+                !is_string($versionSolicitada) ||
+                $versionSolicitada === '' ||
+                !hash_equals($versionActual, $versionSolicitada)
+            ) {
+                http_response_code(404);
+                exit;
+            }
+
             // Limpiar cualquier salida previa antes de entregar la imagen.
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
+            $tamanoArchivo = filesize($foto['ruta']);
+
+            if ($tamanoArchivo === false || $tamanoArchivo <= 0) {
+                http_response_code(404);
+                exit;
+            }
+
+            // Eliminar las cabeceras de no-caché que puede enviar la sesión PHP.
+            header_remove('Cache-Control');
+            header_remove('Pragma');
+            header_remove('Expires');
+
             header('Content-Type: ' . $foto['mime']);
-            header('Content-Length: ' . filesize($foto['ruta']));
+            header('Content-Length: ' . $tamanoArchivo);
             header('Content-Disposition: inline');
-            header('Cache-Control: private, no-store, max-age=0');
+
+            // La URL cambia cuando se reemplaza la foto, por lo que puede almacenarse
+            // de forma privada sin reutilizar una fotografía anterior.
+            header('Cache-Control: private, max-age=604800, immutable', true);
             header('X-Content-Type-Options: nosniff');
 
             readfile($foto['ruta']);

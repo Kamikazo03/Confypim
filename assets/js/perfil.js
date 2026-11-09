@@ -27,12 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     |--------------------------------------------------------------------------
     |
     | La imagen se obtiene mediante el endpoint autenticado.
-    | El parámetro v evita mostrar una versión almacenada en caché.
+    | El parámetro v identifica la versión del archivo y permite reutilizar
+    | la copia privada almacenada en la caché del navegador.
     |
     */
 
+    function obtenerVersionFotoPerfil(referencia) {
+        if (typeof referencia !== 'string' || referencia.trim() === '') {
+            return '';
+        }
+
+        return referencia.split('/').pop() || '';
+    }
+
     function obtenerUrlFotoPerfil() {
-        return `${endpoint}?accion=foto&v=${Date.now()}`;
+        if (!versionFotoPerfil) {
+            return '';
+        }
+
+        return `${endpoint}?accion=foto&v=${encodeURIComponent(versionFotoPerfil)}`;
     }
 
     const inputFoto = document.getElementById('perfilFotoArchivo');
@@ -60,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let avatarActual = app.dataset.avatar || '';
     let fotoPerfilActual = app.dataset.fotoPerfil === '1';
+    let versionFotoPerfil = app.dataset.fotoVersion || '';
 
     /*
     |--------------------------------------------------------------------------
@@ -224,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         avatarTopbar.replaceChildren();
+        avatarTopbar.classList.toggle('has-photo', fotoPerfilActual);
 
         // La fotografía tiene prioridad sobre el avatar y las iniciales.
         if (fotoPerfilActual) {
@@ -231,6 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             imagen.src = obtenerUrlFotoPerfil();
             imagen.alt = `Fotografía de ${obtenerNombreMostrar()}`;
+            imagen.loading = 'eager';
+            imagen.fetchPriority = 'high';
+            imagen.decoding = 'async';
 
             avatarTopbar.appendChild(imagen);
 
@@ -411,6 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const foto = resultado.usuario?.foto_perfil;
 
                 if (foto) {
+                    // Actualizar la versión de la fotografía para renovar la caché.
+                    versionFotoPerfil = obtenerVersionFotoPerfil(foto);
+                    app.dataset.fotoVersion = versionFotoPerfil;
+
                     // Actualizar la vista previa de la fotografía.
                     if (fotoPreview) {
                         fotoPreview.src = obtenerUrlFotoPerfil();
@@ -620,7 +642,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Actualizar el estado de la fotografía.
                 fotoPerfilActual = false;
+                versionFotoPerfil = '';
                 app.dataset.fotoPerfil = '0';
+                app.dataset.fotoVersion = '';
 
                 // Volver a mostrar el avatar o las iniciales en la topbar.
                 actualizarAvatarVisual(avatarActual);

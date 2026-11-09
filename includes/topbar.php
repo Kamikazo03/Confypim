@@ -37,6 +37,16 @@ $iniciales = strtoupper(
 // Obtener la fotografía de perfil guardada en la sesión.
 $fotoPerfil = (string) ($usuarioSesion['foto_perfil'] ?? '');
 
+// Obtener una versión estable de la fotografía para aprovechar la caché del navegador.
+$versionFotoPerfil = $fotoPerfil !== '' ? basename($fotoPerfil) : '';
+
+if (
+    $versionFotoPerfil !== '' &&
+    !preg_match('/^[a-zA-Z0-9_-]+\.(?:jpg|png|webp)$/i', $versionFotoPerfil)
+) {
+    $versionFotoPerfil = '';
+}
+
 // Obtener y validar la posición del encuadre guardada en la sesión.
 $posicionX = filter_var($usuarioSesion['foto_pos_x'] ?? 50,FILTER_VALIDATE_INT);
 $posicionY = filter_var($usuarioSesion['foto_pos_y'] ?? 50,FILTER_VALIDATE_INT);
@@ -90,11 +100,14 @@ $rolMostrar = (string) ($usuarioSesion['rol'] ?? $rolUsuario ?? '');
             class="user-card"
             title="Ver perfil"
         >
-            <div class="user-avatar">
-                <?php if ($fotoPerfil !== ''): ?>
+            <div class="user-avatar <?= $versionFotoPerfil !== '' ? 'has-photo' : ''; ?>">
+                <?php if ($versionFotoPerfil !== ''): ?>
                     <img
-                        src="<?= BASE_URL; ?>ajax/perfil.php?accion=foto"
+                        src="<?= BASE_URL; ?>ajax/perfil.php?accion=foto&amp;v=<?= rawurlencode($versionFotoPerfil); ?>"
                         alt="Fotografía de perfil"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async"
                         style="object-position: <?= $posicionX; ?>% <?= $posicionY; ?>%;"
                     >
                 <?php elseif ($avatarSeleccionado !== ''): ?>
