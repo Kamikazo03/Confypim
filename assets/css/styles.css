@@ -102,7 +102,9 @@ video{
     color:#FFFFFF;
     padding:20px;
     overflow:hidden;
-    transition:.3s ease;
+    /* Las transiciones se habilitan cuando preferences.js termina
+       de aplicar el estado inicial del Sidebar. */
+    transition:none;
     position:sticky;
     top:0;
     height:100vh;
@@ -186,6 +188,45 @@ video{
     width:100%;
     margin-bottom:20px;
     object-fit:cover;
+}
+
+/* ==========================================================
+   5.1 ESTADO INICIAL DEL SIDEBAR
+   ========================================================== */
+
+/*
+ * head.php establece esta clase antes de cargar los estilos.
+ * Así el navegador puede representar el Sidebar en su estado
+ * correcto desde el primer renderizado, sin mostrarlo expandido.
+ */
+html.sidebar-initial-collapsed .sidebar{
+    width:80px;
+}
+
+html.sidebar-initial-collapsed .sidebar .text{
+    display:none;
+}
+
+html.sidebar-initial-collapsed .sidebar .menu a{
+    justify-content:center;
+    gap:0;
+}
+
+html.sidebar-initial-collapsed .sidebar .logo{
+    display:none;
+}
+
+html.sidebar-initial-collapsed .sidebar .imagen{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    margin-bottom:20px;
+    object-fit:cover;
+}
+
+/* Habilitar animaciones después de la inicialización. */
+html.sidebar-ready .sidebar{
+    transition:width .3s ease, box-shadow .3s ease;
 }
 
 /* ==========================================================
@@ -1183,7 +1224,17 @@ th{
         padding:14px 10px;
     }
 
-    .sidebar:not(.collapsed){
+    /* Estado móvil aplicado desde head.php antes del primer renderizado. */
+    html.sidebar-initial-collapsed .sidebar{
+        width:64px;
+        padding:14px 10px;
+    }
+
+    html.sidebar-initial-collapsed .content{
+        margin-left:64px;
+    }
+
+    .sidebar-ready .sidebar:not(.collapsed){
         box-shadow:6px 0 24px rgba(0,0,0,.25);
     }
 

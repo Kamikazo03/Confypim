@@ -13,6 +13,29 @@ Head común del sistema
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- =======================================================
+    Estado inicial del Sidebar
+    Se ejecuta antes de cargar los estilos para evitar que
+    el menú aparezca expandido antes de restaurar su estado.
+======================================================== -->
+<script>
+    (function () {
+        const raiz = document.documentElement;
+        const esMovil = window.matchMedia('(max-width: 768px)').matches;
+        let estadoGuardado = 'expanded';
+
+        try {
+            estadoGuardado = localStorage.getItem('sidebarState') || 'expanded';
+        } catch (error) {
+            // Si LocalStorage no está disponible, se utiliza el estado predeterminado.
+        }
+
+        if (esMovil || estadoGuardado === 'collapsed') {
+            raiz.classList.add('sidebar-initial-collapsed');
+        }
+    })();
+</script>
+
 <?php $titulosEspeciales = ['login' => 'Iniciar sesión', 'register' => 'Crear cuenta', ];
 
 $tituloPagina = $titulosEspeciales[$paginaActual] ?? ($menu[$paginaActual]['tituloBrowser'] ?? null);
@@ -38,7 +61,6 @@ $tituloNavegador = $tituloPagina !== null ? $tituloPagina . ' | ' . APP_NAME : A
 <!-- =======================================================
     Google Fonts
 ======================================================== -->
-
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
