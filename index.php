@@ -167,6 +167,36 @@ switch ($pagina) {
         break;
 
     /* ==========================================================
+     * INSUMOS
+     * ========================================================== */
+
+    case 'insumos':
+
+        /**
+         * Crear controlador.
+         */
+        require_once ROOT_PATH . '/app/controllers/InsumoController.php';
+
+        $insumoController = new InsumoController();
+
+        /**
+         * Obtener indicadores iniciales del inventario.
+         */
+        $metricasInsumos = $insumoController->obtenerMetricas();
+
+        /**
+         * Página actual.
+         */
+        $paginaActual = 'insumos';
+
+        /**
+         * Cargar vista.
+         */
+        require_once ROOT_PATH . '/app/views/insumos/insumo.php';
+
+        break;
+
+    /* ==========================================================
      * VENTAS
      * ========================================================== */
 

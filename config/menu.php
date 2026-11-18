@@ -33,15 +33,14 @@ $menu = [
      * INVENTARIO
      * ========================================================== */
 
-    "inventario" => [
-        "titulo"         => "Inventario",
-        "tituloBrowser"  => "Inventario",
-        "descripcion"    => "Esta sección se encuentra actualmente en desarrollo.",
+    "insumos" => [
+        "titulo"         => "Insumos",
+        "tituloBrowser"  => "Insumos",
+        "descripcion"    => "Administra tus existencias, compras, consumos y recetas.",
         "icono"          => "📦",
-        "url"            => BASE_URL . "index.php?page=inventario",
+        "url"            => BASE_URL . "index.php?page=insumos",
         "activo"         => true
     ],
-
     /* ==========================================================
      * PRODUCTOS
      * ========================================================== */

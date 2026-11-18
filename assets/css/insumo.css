@@ -1,0 +1,1247 @@
+/* ==========================================================
+   Módulo Insumos
+   ==========================================================
+   Hoja de estilos exclusiva para la vista de Insumos.
+   Mantiene la identidad visual general de Confypim sin
+   modificar los estilos compartidos del sistema.
+   ========================================================== */
+
+.insumos-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ==========================================================
+   Encabezado
+   ========================================================== */
+
+.insumos-encabezado h1 {
+    margin-bottom: 7px;
+    color: var(--text);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.insumos-encabezado p,
+.insumo-panel-intro p {
+    color: #777777;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ==========================================================
+   Indicadores
+   ========================================================== */
+
+.insumos-metricas {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.insumo-metrica {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.insumo-metrica-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 13px;
+    background: var(--primary-light);
+    font-size: 21px;
+}
+
+.insumo-metrica p {
+    margin-bottom: 5px;
+    color: #777777;
+    font-size: 12px;
+}
+
+.insumo-metrica strong {
+    display: block;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ==========================================================
+   Pestañas
+   ========================================================== */
+
+.insumos-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+}
+
+.insumo-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 10px 17px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #666666;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.insumo-tab:hover {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.insumo-tab.active {
+    background: var(--primary);
+    color: #4A4A4A;
+}
+
+/* ==========================================================
+   Paneles y tarjetas
+   ========================================================== */
+
+.insumo-panel {
+    display: none;
+}
+
+.insumo-panel.active {
+    display: block;
+}
+
+.insumo-card {
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.insumo-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.insumo-card-header h2,
+.insumo-panel-intro h2 {
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.insumo-card-header p {
+    color: #777777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.insumo-panel-intro {
+    margin-bottom: 18px;
+}
+
+.insumo-panel-intro h2 {
+    font-size: 22px;
+}
+
+.insumo-layout {
+    display: grid;
+    grid-template-columns: minmax(270px, .78fr) minmax(0, 1.7fr);
+    align-items: start;
+    gap: 20px;
+}
+
+.insumo-formulario-columna {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.insumo-form-card.editing {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 2px rgba(213, 139, 166, .12);
+}
+
+.insumo-tabla-card {
+    min-width: 0;
+}
+
+/* ==========================================================
+   Formularios
+   ========================================================== */
+
+.insumo-campo[hidden] {
+    display: none;
+}
+
+.insumo-campo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.insumo-campo label {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.insumo-campo input,
+.insumo-campo select,
+.insumo-campo textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    background: #FFFFFF;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.insumo-campo textarea {
+    min-height: 88px;
+    resize: vertical;
+}
+
+.insumo-campo input:focus,
+.insumo-campo select:focus,
+.insumo-campo textarea:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(213, 139, 166, .16);
+}
+
+.insumo-campo input:disabled,
+.insumo-campo select:disabled {
+    background: #F3F3F3;
+    color: #777777;
+    cursor: not-allowed;
+}
+
+.insumo-campo small {
+    color: #858585;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.insumo-form-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.insumo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 17px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.insumo-btn:hover {
+    transform: translateY(-1px);
+}
+
+.insumo-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.insumo-btn-principal {
+    background: var(--primary-dark);
+    color: #FFFFFF;
+}
+
+.insumo-btn-principal:hover {
+    background: #C87998;
+}
+
+.insumo-btn-secundario {
+    border-color: var(--border);
+    background: #FFFFFF;
+    color: var(--text);
+}
+
+.insumo-btn-secundario:hover {
+    border-color: var(--primary-dark);
+    background: var(--primary-light);
+}
+
+.insumo-btn-texto {
+    padding: 7px 4px;
+    border: 0;
+    background: transparent;
+    color: var(--primary-dark);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.insumo-btn-texto:hover {
+    text-decoration: underline;
+}
+
+.insumo-nota,
+.insumo-ayuda-operacion {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: #6D5660;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.insumo-ayuda-operacion {
+    margin-top: 5px;
+}
+
+.insumo-ayuda-operacion i {
+    margin-top: 2px;
+    color: var(--primary-dark);
+}
+
+/* ==========================================================
+   Búsqueda y tabla
+   ========================================================== */
+
+.insumo-listado-header {
+    align-items: center;
+}
+
+.insumo-contador {
+    display: inline-flex;
+    margin-left: 6px;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.insumo-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: min(230px, 100%);
+    min-height: 40px;
+    padding: 0 11px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #888888;
+}
+
+.insumo-busqueda input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.insumo-tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.insumo-tabla {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.insumo-tabla thead {
+    background: var(--primary-light);
+}
+
+.insumo-tabla th {
+    padding: 13px 14px;
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.insumo-tabla td {
+    padding: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.insumo-tabla tbody tr:hover {
+    background: rgba(246, 231, 238, .32);
+}
+
+.insumo-unidad {
+    color: #888888;
+    font-size: 11px;
+}
+
+.insumo-estado,
+.insumo-tipo-movimiento {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.insumo-estado.disponible {
+    background: #DDF4E4;
+    color: #236B3A;
+}
+
+.insumo-estado.bajo {
+    background: #FFF0D5;
+    color: #8A5A00;
+}
+
+.insumo-estado.agotado {
+    background: #FDE5E5;
+    color: #A52626;
+}
+
+.insumo-acciones {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.insumo-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+.insumo-accion:hover {
+    transform: translateY(-2px);
+}
+
+.insumo-accion.editar {
+    background: var(--primary-dark);
+}
+
+.insumo-accion.eliminar {
+    background: #D96B6B;
+}
+
+/* ==========================================================
+   Papelera
+   ========================================================== */
+
+.insumo-papelera-card {
+    padding: 19px;
+}
+
+.insumo-papelera-card .insumo-card-header {
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.insumo-papelera-card .insumo-card-header h2 {
+    font-size: 15px;
+}
+
+.insumo-papelera-card .insumo-card-header p {
+    font-size: 11px;
+}
+
+.insumo-papelera-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.insumo-papelera-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.insumo-papelera-item strong,
+.insumo-papelera-item small {
+    display: block;
+}
+
+.insumo-papelera-item strong {
+    color: var(--text);
+    font-size: 12px;
+}
+
+.insumo-papelera-item small {
+    margin-top: 3px;
+    color: #888888;
+    font-size: 10px;
+}
+
+.insumo-btn-restaurar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ==========================================================
+   Formularios de operaciones
+   ========================================================== */
+
+.insumo-operacion-card {
+    max-width: 1000px;
+}
+
+.insumo-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 22px;
+}
+
+.insumo-campo-completo {
+    grid-column: 1 / -1;
+}
+
+.insumo-operacion-card .insumo-form-acciones {
+    margin-top: 24px;
+}
+
+/* ==========================================================
+   Historial de movimientos
+   ========================================================== */
+
+.insumo-historial-card {
+    margin-top: 20px;
+}
+
+.insumo-tipo-movimiento.entrada {
+    background: #DDF4E4;
+    color: #236B3A;
+}
+
+.insumo-tipo-movimiento.consumo {
+    background: #FFF0D5;
+    color: #8A5A00;
+}
+
+.insumo-tipo-movimiento.ajuste {
+    background: #E8E6FA;
+    color: #51469B;
+}
+
+.insumo-tabla-movimientos {
+    min-width: 850px;
+}
+
+/* ==========================================================
+   Recetas
+   ========================================================== */
+
+.insumo-receta-card {
+    max-width: 1050px;
+}
+
+.insumo-receta-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 28px 0 16px;
+}
+
+.insumo-receta-encabezado h3 {
+    margin-bottom: 5px;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.insumo-receta-encabezado p {
+    color: #777777;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.insumo-receta-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.insumo-receta-fila {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(110px, .6fr) 36px;
+    align-items: end;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: #FFFEFE;
+}
+
+.insumo-receta-fila .insumo-campo {
+    margin: 0;
+}
+
+.insumo-receta-fila .insumo-campo label {
+    font-size: 11px;
+}
+
+.insumo-receta-fila .insumo-campo input,
+.insumo-receta-fila .insumo-campo select {
+    min-height: 40px;
+    font-size: 12px;
+}
+
+.insumo-receta-costo {
+    padding-bottom: 7px;
+}
+
+.insumo-receta-costo span,
+.insumo-receta-costo strong {
+    display: block;
+}
+
+.insumo-receta-costo span {
+    margin-bottom: 5px;
+    color: #888888;
+    font-size: 10px;
+}
+
+.insumo-receta-costo strong {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.insumo-receta-eliminar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 38px;
+    margin-bottom: 1px;
+    border: 0;
+    border-radius: 8px;
+    background: #FDECEC;
+    color: #B43D3D;
+    cursor: pointer;
+}
+
+.insumo-receta-resumen {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: var(--primary-light);
+}
+
+.insumo-receta-resumen div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.insumo-receta-resumen span {
+    color: #66535B;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.insumo-receta-resumen strong {
+    color: var(--text);
+    font-size: 21px;
+}
+
+.insumo-receta-resumen p {
+    margin-top: 8px;
+    color: #77666D;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* ==========================================================
+   Mensajes
+   ========================================================== */
+
+.insumo-vacio {
+    padding: 28px 18px;
+    color: #888888;
+    font-size: 13px;
+    text-align: center;
+}
+
+.insumo-error-texto {
+    color: #A52626;
+}
+
+/* ==========================================================
+   Diseño responsive
+   ========================================================== */
+
+@media (max-width: 1100px) {
+    .insumos-metricas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .insumo-layout {
+        grid-template-columns: minmax(250px, .8fr) minmax(0, 1.2fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .insumo-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .insumo-formulario-columna {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+
+    .insumo-receta-fila {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) 36px;
+    }
+
+    .insumo-receta-costo {
+        grid-column: 1 / 3;
+        grid-row: 2;
+        padding-bottom: 0;
+    }
+
+    .insumo-receta-eliminar {
+        grid-column: 3;
+        grid-row: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .insumos-main {
+        gap: 17px;
+    }
+
+    .insumos-encabezado h1 {
+        font-size: 23px;
+    }
+
+    .insumos-metricas {
+        gap: 10px;
+    }
+
+    .insumo-metrica {
+        gap: 9px;
+        padding: 13px;
+    }
+
+    .insumo-metrica-icono {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+        font-size: 17px;
+    }
+
+    .insumo-metrica p {
+        font-size: 10px;
+    }
+
+    .insumo-metrica strong {
+        font-size: 16px;
+    }
+
+    .insumos-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .insumo-tab {
+        padding: 9px 7px;
+        font-size: 11px;
+    }
+
+    .insumo-card {
+        padding: 17px;
+    }
+
+    .insumo-formulario-columna {
+        display: flex;
+    }
+
+    .insumo-listado-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .insumo-busqueda {
+        width: 100%;
+    }
+
+    .insumo-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insumo-campo-completo {
+        grid-column: auto;
+    }
+
+    .insumo-receta-encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .insumo-receta-fila {
+        grid-template-columns: minmax(0, 1fr) 36px;
+        gap: 10px;
+    }
+
+    .insumo-receta-fila .insumo-campo:first-child,
+    .insumo-receta-fila .insumo-campo:nth-child(2) {
+        grid-column: 1 / -1;
+    }
+
+    .insumo-receta-costo {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .insumo-receta-eliminar {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    .insumo-receta-resumen div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .insumo-form-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .insumo-form-acciones .insumo-btn {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================================
+   Ajustes de presentación y administración de recetas
+========================================================== */
+
+/* Centrar los formularios de operaciones en pantallas amplias. */
+.insumo-operacion-card,
+.insumo-receta-card,
+.insumo-recetas-listado-card {
+    width: min(100%, 980px);
+    margin-inline: auto;
+}
+
+/* Listado de recetas existentes. */
+.insumo-recetas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.insumo-receta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid #eee5e8;
+    border-radius: 12px;
+    background: #fffdfd;
+}
+
+.insumo-receta-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.insumo-receta-item-info strong {
+    color: #4A4A4A;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.insumo-receta-item-info span {
+    color: #777;
+    font-size: 12px;
+}
+
+.insumo-receta-item-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.insumo-receta-item-acciones .insumo-accion {
+    width: 36px;
+    height: 36px;
+}
+
+.insumo-receta-card {
+    margin-top: 18px;
+}
+
+.insumo-receta-card [hidden],
+#notaStockInicial[hidden],
+#btnCancelarEdicionReceta[hidden] {
+    display: none !important;
+}
+
+/* En tablet y móvil se presenta primero el formulario,
+   después el inventario y finalmente la papelera. */
+@media (max-width: 850px) {
+    .insumo-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .insumo-formulario-columna {
+        display: contents;
+    }
+
+    .insumo-form-card {
+        order: 1;
+    }
+
+    .insumo-tabla-card {
+        order: 2;
+    }
+
+    .insumo-papelera-card {
+        order: 3;
+    }
+}
+
+@media (max-width: 600px) {
+    .insumo-receta-item {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    .insumo-receta-item-info strong {
+        font-size: 13px;
+    }
+
+    .insumo-receta-item-info span {
+        font-size: 11px;
+    }
+
+    .insumo-receta-item-acciones {
+        gap: 5px;
+    }
+
+    .insumo-receta-item-acciones .insumo-accion {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+
+/* ==========================================================
+   Operaciones múltiples
+========================================================== */
+
+.insumo-operacion-extra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding: 13px 15px;
+    border: 1px solid #F0E2E8;
+    border-radius: 12px;
+    background: #FFFAFC;
+}
+
+.insumo-operacion-extra p {
+    margin: 0;
+    color: #66535B;
+    font-size: 13px;
+}
+
+.insumo-modal-overlay[hidden] {
+    display: none !important;
+}
+
+.insumo-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgba(35, 25, 30, .58);
+}
+
+.insumo-modal {
+    width: min(100%, 900px);
+    max-height: min(92vh, 900px);
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 18px;
+    background: #FFFFFF;
+    box-shadow: 0 20px 65px rgba(0, 0, 0, .22);
+}
+
+.insumo-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.insumo-modal-header h2 {
+    margin: 0 0 7px;
+    color: var(--text);
+    font-size: 20px;
+}
+
+.insumo-modal-header p {
+    margin: 0;
+    color: #81747A;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.insumo-modal-cerrar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 9px;
+    background: #F7EEF2;
+    color: #725866;
+    cursor: pointer;
+}
+
+.insumo-lote-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.insumo-lote-fila {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.3fr) minmax(100px, .8fr) minmax(120px, .8fr) minmax(120px, .8fr) 36px;
+    align-items: end;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid #EEE3E8;
+    border-radius: 12px;
+    background: #FFFEFE;
+}
+
+.insumo-lote-fila .insumo-campo {
+    min-width: 0;
+    margin: 0;
+}
+
+.insumo-lote-fila .insumo-campo label {
+    font-size: 11px;
+}
+
+.insumo-lote-fila .insumo-campo input,
+.insumo-lote-fila .insumo-campo select {
+    min-height: 40px;
+    font-size: 12px;
+}
+
+.insumo-lote-fila .insumo-campo small {
+    display: block;
+    margin-top: 5px;
+    color: #8A727D;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.insumo-lote-quitar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 38px;
+    border: 0;
+    border-radius: 9px;
+    background: #FDECEC;
+    color: #B43D3D;
+    cursor: pointer;
+}
+
+.insumo-lote-observacion {
+    margin-top: 18px;
+}
+
+.insumo-lote-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 18px;
+    padding: 15px 17px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: #66535B;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.insumo-lote-total strong {
+    color: var(--text);
+    font-size: 20px;
+}
+
+.insumo-lote-configuracion {
+    margin-bottom: 18px;
+}
+
+body.insumo-modal-abierto {
+    overflow: hidden;
+}
+
+@media (max-width: 700px) {
+    .insumo-operacion-extra {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .insumo-operacion-extra .insumo-btn {
+        width: 100%;
+    }
+
+    .insumo-modal-overlay {
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .insumo-modal {
+        max-height: 96vh;
+        padding: 17px;
+        border-radius: 14px;
+    }
+
+    .insumo-modal-header h2 {
+        font-size: 17px;
+    }
+
+    .insumo-lote-fila {
+        grid-template-columns: minmax(0, 1fr) 36px;
+        gap: 10px;
+    }
+
+    .insumo-lote-fila .insumo-campo:first-child,
+    .insumo-lote-fila .insumo-campo:nth-child(2),
+    .insumo-lote-fila .insumo-campo:nth-child(3),
+    .insumo-lote-fila .insumo-campo:nth-child(4) {
+        grid-column: 1;
+    }
+
+    .insumo-lote-quitar {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .insumo-lote-total {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .insumo-modal .insumo-form-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .insumo-modal .insumo-form-acciones .insumo-btn {
+        width: 100%;
+    }
+}

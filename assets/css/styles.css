@@ -128,10 +128,15 @@ video{
     color:#FFFFFF;
     font-size:20px;
     cursor:pointer;
-    margin-bottom:20px;
-    margin-left:10px;
+    margin:0 auto 20px;
+    width:40px;
+    height:40px;
     display:flex;
-    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    align-self:center;
+    flex-shrink:0;
+    padding:0;
 }
 
 .menu{
@@ -176,6 +181,13 @@ video{
 .sidebar.collapsed .menu a{
     justify-content:center;
     gap:0;
+}
+
+/* El botón permanece centrado con respecto al riel y a los iconos del menú. */
+.sidebar.collapsed .toggle-btn{
+    margin-left:auto;
+    margin-right:auto;
+    align-self:center;
 }
 
 .sidebar.collapsed .logo{
