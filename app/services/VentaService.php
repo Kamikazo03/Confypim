@@ -457,6 +457,18 @@ class VentaService
                 'Pagada'
             );
 
+            /*
+             * Toda venta pagada genera su ingreso contable.
+             * La operación comparte la transacción del pago y del stock:
+             * si falla el ingreso, también se revierte el pago.
+             */
+            $this->ventaModel->registrarIngresoVenta(
+                $idVenta,
+                $idUsuario,
+                (float) $venta['total'],
+                (string) $venta['fecha_venta']
+            );
+
             $this->db->commit();
 
             $venta = $this->ventaModel->obtenerCompleta(

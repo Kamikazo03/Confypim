@@ -55,7 +55,7 @@ Head común del sistema
 
 <meta name="theme-color" content="#F8F5F2">
 
-<?php $titulosEspeciales = ['login' => 'Iniciar sesión', 'register' => 'Crear cuenta', ];
+<?php $titulosEspeciales = ['inicio' => 'Inicio', 'login' => 'Iniciar sesión', 'register' => 'Crear cuenta', ];
 
 $tituloPagina = $titulosEspeciales[$paginaActual] ?? ($menu[$paginaActual]['tituloBrowser'] ?? null);
 
@@ -74,6 +74,10 @@ $tituloNavegador = $tituloPagina !== null ? $tituloPagina . ' | ' . APP_NAME : A
 <link rel="stylesheet" href="<?= CSS_URL ?>notifications.css?v=<?= filemtime(ROOT_PATH . '/assets/css/notifications.css'); ?>">
 
 <link rel="stylesheet" href="<?= CSS_URL ?>auth.css?v=<?= filemtime(ROOT_PATH . '/assets/css/auth.css'); ?>">
+
+<?php if (($paginaActual ?? '') === 'inicio'): ?>
+<link rel="stylesheet" href="<?= CSS_URL ?>inicio.css?v=<?= filemtime(ROOT_PATH . '/assets/css/inicio.css'); ?>">
+<?php endif; ?>
 
 <link rel="stylesheet" href="<?= CSS_URL ?>perfil.css?v=<?= filemtime(ROOT_PATH . '/assets/css/perfil.css'); ?>">
 

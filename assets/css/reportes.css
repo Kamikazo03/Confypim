@@ -1,0 +1,669 @@
+/* ==========================================================
+   MÓDULO REPORTES
+   Estilos aislados para no modificar los demás módulos.
+========================================================== */
+
+.reportes-main {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.reportes-toolbar {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 20px;
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 74, 74, .07);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(74, 55, 63, .04);
+}
+
+.reportes-periodo,
+.reportes-fechas > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.reportes-periodo {
+    min-width: 220px;
+}
+
+.reportes-toolbar label {
+    color: #68615F;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.reportes-toolbar select,
+.reportes-toolbar input {
+    min-height: 42px;
+    padding: 9px 12px;
+    color: #4A4A4A;
+    background: #FCFAF9;
+    border: 1px solid #E9E1E2;
+    border-radius: 9px;
+    font: inherit;
+    font-size: .86rem;
+    outline: none;
+}
+
+.reportes-toolbar select:focus,
+.reportes-toolbar input:focus {
+    border-color: #D58BA6;
+    box-shadow: 0 0 0 3px rgba(213, 139, 166, .13);
+}
+
+.reportes-fechas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reportes-fechas[hidden] {
+    display: none;
+}
+
+.reportes-fechas input {
+    min-width: 145px;
+}
+
+.reportes-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 15px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.reportes-btn:hover {
+    transform: translateY(-1px);
+}
+
+.reportes-btn:disabled {
+    opacity: .65;
+    cursor: wait;
+    transform: none;
+}
+
+.reportes-btn-principal {
+    margin-left: auto;
+    color: #FFFFFF;
+    background: #D58BA6;
+    box-shadow: 0 4px 10px rgba(213, 139, 166, .18);
+}
+
+.reportes-btn-principal:hover {
+    background: #C97898;
+}
+
+.reportes-btn-secundario {
+    color: #6C535D;
+    background: #F6E7EE;
+    border-color: #EED5DF;
+}
+
+.reportes-btn-secundario:hover {
+    background: #F0DCE5;
+}
+
+.reportes-btn-pequeno {
+    min-height: 36px;
+    padding: 7px 11px;
+    font-size: .78rem;
+}
+
+.reportes-periodo-actual {
+    margin: -12px 2px 0;
+    color: #817A78;
+    font-size: .78rem;
+}
+
+.reportes-resumen {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.reporte-kpi {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+    padding: 19px 20px;
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 74, 74, .07);
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(74, 55, 63, .04);
+}
+
+.reporte-kpi-icono {
+    display: grid;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 13px;
+    font-size: 1.1rem;
+}
+
+.reporte-kpi-ingresos .reporte-kpi-icono {
+    color: #54866B;
+    background: #EAF4ED;
+}
+
+.reporte-kpi-gastos .reporte-kpi-icono {
+    color: #B96D88;
+    background: #F9EAF0;
+}
+
+.reporte-kpi-balance .reporte-kpi-icono {
+    color: #92704F;
+    background: #F5EEE6;
+}
+
+.reporte-kpi > div:last-child {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 3px;
+}
+
+.reporte-kpi span {
+    color: #77716F;
+    font-size: .82rem;
+    font-weight: 500;
+}
+
+.reporte-kpi strong {
+    overflow-wrap: anywhere;
+    color: #45403F;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.reporte-kpi small {
+    color: #96908E;
+    font-size: .7rem;
+}
+
+.reportes-tabs {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding: 5px;
+    background: #F0EAE8;
+    border-radius: 12px;
+    scrollbar-width: thin;
+}
+
+.reporte-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 15px;
+    color: #77706E;
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.reporte-tab:hover {
+    color: #765260;
+    background: rgba(255, 255, 255, .55);
+}
+
+.reporte-tab.active {
+    color: #8E536B;
+    background: #FFFFFF;
+    box-shadow: 0 2px 7px rgba(74, 55, 63, .08);
+}
+
+.reportes-contenido {
+    min-width: 0;
+}
+
+.reporte-panel {
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+    animation: reporteAparecer .2s ease;
+}
+
+.reporte-panel.active {
+    display: flex;
+}
+
+.reporte-panel[hidden] {
+    display: none !important;
+}
+
+@keyframes reporteAparecer {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.reportes-graficos-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(280px, .85fr);
+    gap: 18px;
+}
+
+.reporte-panel-card {
+    min-width: 0;
+    padding: 21px;
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 74, 74, .07);
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(74, 55, 63, .04);
+}
+
+.reporte-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.reporte-card-heading h2 {
+    margin: 0 0 5px;
+    color: #4A4A4A;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.reporte-card-heading p {
+    margin: 0;
+    color: #918987;
+    font-size: .76rem;
+    line-height: 1.5;
+}
+
+.reporte-chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 310px;
+}
+
+.reporte-chart-donut {
+    height: 270px;
+    max-width: 430px;
+    margin: 0 auto;
+}
+
+.reporte-chart-medium {
+    height: 290px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.reporte-chart-ranking {
+    height: 360px;
+}
+
+.reporte-chart-empty {
+    padding: 16px 10px;
+    color: #99918F;
+    font-size: .82rem;
+    text-align: center;
+}
+
+.reporte-chart-empty[hidden] {
+    display: none;
+}
+
+.reporte-nota-financiera {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 18px;
+    color: #786C66;
+    background: #FBF7F3;
+    border-color: #F0E7DE;
+    box-shadow: none;
+}
+
+.reporte-nota-financiera i {
+    margin-top: 2px;
+    color: #B8896A;
+}
+
+.reporte-nota-financiera p {
+    margin: 0;
+    font-size: .78rem;
+    line-height: 1.6;
+}
+
+.reportes-detalle-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.reportes-detalle-kpis article,
+.reporte-balance-desglose article {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 17px 19px;
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 74, 74, .07);
+    border-radius: 13px;
+}
+
+.reportes-detalle-kpis span,
+.reporte-balance-desglose span {
+    color: #827A77;
+    font-size: .78rem;
+}
+
+.reportes-detalle-kpis strong,
+.reporte-balance-desglose strong {
+    color: #4A4A4A;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.reportes-detalle-kpis small {
+    color: #A09A97;
+    font-size: .72rem;
+}
+
+.reporte-tabla-card {
+    padding-bottom: 10px;
+}
+
+.reporte-contador {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    color: #8B6574;
+    background: #F8EDF1;
+    border-radius: 20px;
+    font-size: .7rem;
+    font-weight: 600;
+}
+
+.reporte-tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.reporte-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.reporte-tabla th {
+    padding: 12px 13px;
+    color: #827A77;
+    background: #FAF7F6;
+    border-bottom: 1px solid #EEE7E5;
+    font-size: .72rem;
+    font-weight: 650;
+    text-align: left;
+}
+
+.reporte-tabla td {
+    padding: 13px;
+    color: #5C5654;
+    border-bottom: 1px solid #F1ECEA;
+    font-size: .77rem;
+}
+
+.reporte-tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.reporte-tabla tbody tr:hover {
+    background: #FDFBFA;
+}
+
+.reporte-tabla .texto-derecha {
+    text-align: right;
+}
+
+.reporte-tabla-vacia {
+    padding: 28px 12px !important;
+    color: #9B9390 !important;
+    text-align: center;
+}
+
+.monto-positivo {
+    color: #54866B !important;
+    font-weight: 650;
+}
+
+.monto-negativo {
+    color: #B96D88 !important;
+    font-weight: 650;
+}
+
+.reporte-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: .68rem;
+    font-weight: 600;
+}
+
+.etiqueta-venta {
+    color: #557D65;
+    background: #EAF4ED;
+}
+
+.etiqueta-adicional {
+    color: #8A668F;
+    background: #F2EDF5;
+}
+
+.reporte-balance-destacado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 23px 25px;
+    background: linear-gradient(120deg, #F7EDF1, #FBF7F3);
+    border: 1px solid #F0E2E7;
+    border-radius: 15px;
+}
+
+.reporte-balance-destacado > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.reporte-balance-destacado span {
+    color: #806B72;
+    font-size: .82rem;
+}
+
+.reporte-balance-destacado strong {
+    color: #4A4A4A;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 700;
+}
+
+.reporte-balance-destacado strong.balance-negativo {
+    color: #B96D88;
+}
+
+.reporte-balance-destacado strong.balance-positivo {
+    color: #54866B;
+}
+
+.reporte-balance-destacado small {
+    color: #8F8584;
+    font-size: .75rem;
+}
+
+.reporte-balance-destacado > i {
+    color: #C68CA1;
+    font-size: 2.2rem;
+}
+
+.reporte-balance-desglose {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.reporte-historial-nota {
+    margin: 12px 2px 5px;
+    color: #928A87;
+    font-size: .72rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 1100px) {
+    .reportes-graficos-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .reporte-chart-donut {
+        max-width: 380px;
+    }
+}
+
+@media (max-width: 760px) {
+    .reportes-main {
+        gap: 16px;
+    }
+
+    .reportes-toolbar {
+        align-items: stretch;
+        padding: 15px;
+    }
+
+    .reportes-periodo {
+        min-width: 100%;
+    }
+
+    .reportes-periodo select {
+        width: 100%;
+    }
+
+    .reportes-fechas {
+        width: 100%;
+    }
+
+    .reportes-fechas > div {
+        flex: 1 1 135px;
+        min-width: 0;
+    }
+
+    .reportes-fechas input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .reportes-btn {
+        flex: 1 1 auto;
+    }
+
+    .reportes-btn-principal {
+        margin-left: 0;
+    }
+
+    .reportes-resumen {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .reporte-kpi {
+        padding: 15px 16px;
+    }
+
+    .reporte-kpi-icono {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .reportes-tabs {
+        margin: 0 -2px;
+    }
+
+    .reporte-tab {
+        min-height: 39px;
+        padding: 8px 12px;
+        font-size: .75rem;
+    }
+
+    .reporte-panel-card {
+        padding: 16px;
+    }
+
+    .reporte-chart-wrap {
+        height: 260px;
+    }
+
+    .reporte-chart-ranking {
+        height: 330px;
+    }
+
+    .reportes-detalle-kpis {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .reporte-balance-desglose {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .reporte-balance-destacado {
+        padding: 19px;
+    }
+}
+
+@media (max-width: 430px) {
+    .reportes-fechas {
+        flex-direction: column;
+    }
+
+    .reportes-fechas > div {
+        width: 100%;
+    }
+
+    .reporte-card-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reporte-chart-wrap {
+        height: 235px;
+    }
+
+    .reporte-chart-ranking {
+        height: 310px;
+    }
+
+    .reporte-balance-destacado > i {
+        font-size: 1.6rem;
+    }
+}

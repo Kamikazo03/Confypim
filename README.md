@@ -1,188 +1,267 @@
 # Confypim
 
-Aplicación web para la gestión administrativa de pequeños emprendimientos dedicados a la elaboración y comercialización de postres y tortas.
+Sistema web de gestión administrativa y financiera para pequeños
+emprendimientos dedicados a la elaboración y comercialización de postres
+y tortas.
 
-## Descripción
+**Versión actual:** 1.0.3
 
-**Confypim** es un sistema de gestión que permite centralizar las operaciones principales de un pequeño negocio de repostería mediante una aplicación web. Su propósito es facilitar la administración de usuarios, productos, ventas e información general del emprendimiento.
+## Descripción general
 
-El proyecto utiliza una arquitectura MVC en el backend PHP y una API REST para comunicar los diferentes componentes. El módulo de Ventas incorpora React para desarrollar una interfaz basada en componentes.
+**Confypim** es una aplicación web diseñada para centralizar la
+administración de un pequeño emprendimiento de repostería. Reúne en una
+sola plataforma las herramientas necesarias para organizar productos,
+ventas, insumos, movimientos financieros y la información general del
+negocio.
+
+El sistema cuenta con una página pública de Inicio, desde la cual los
+visitantes pueden conocer el propósito de la aplicación, iniciar sesión
+o crear una cuenta. Después de autenticarse, el usuario accede a un área
+privada con un Dashboard y los módulos de gestión disponibles.
+
+La aplicación busca facilitar el control de las operaciones cotidianas,
+mantener organizada la información y ofrecer indicadores que apoyen el
+seguimiento del emprendimiento.
+
+## Funcionalidades principales
+
+-   **Inicio público:** presenta el propósito de Confypim y permite
+    acceder al inicio de sesión o al registro.
+-   **Autenticación:** registro de usuarios, inicio y cierre de sesión,
+    y protección de las rutas privadas.
+-   **Dashboard:** resumen general de la actividad del emprendimiento.
+-   **Productos:** administración del catálogo de productos, precios e
+    información de cada creación.
+-   **Ventas:** registro y consulta de ventas, productos asociados,
+    cantidades, totales y estados.
+-   **Insumos:** administración de ingredientes y materiales,
+    existencias, movimientos y necesidades de compra.
+-   **Ingresos:** consulta de movimientos de ingreso, categorías,
+    evolución y rendimiento de productos.
+-   **Gastos:** consulta y organización de gastos por movimientos y
+    categorías.
+-   **Reportes:** consulta de indicadores, balance financiero e
+    historial de reportes guardados.
+-   **Perfil:** actualización de información personal, fotografía,
+    avatar y preferencias disponibles.
 
 ## Tecnologías utilizadas
 
-| Tecnología | Función |
-|---|---|
-| PHP | Procesamiento de solicitudes y lógica del backend. |
-| MVC | Organización de controladores, modelos y vistas. |
-| API REST | Comunicación entre el frontend y el backend. |
-| HTML | Estructura de las interfaces. |
-| CSS | Presentación visual de la aplicación. |
-| JavaScript | Interactividad y comunicación con la API. |
-| React | Componentes de interfaz del módulo de Ventas. |
-| Vite | Herramienta de desarrollo y compilación de React. |
-| MySQL | Almacenamiento de información. |
-| PDO | Conexión y acceso a la base de datos. |
-| Apache | Servidor web utilizado en el entorno local. |
-| XAMPP | Entorno local de desarrollo. |
-| Git y GitHub | Control de versiones y almacenamiento del código fuente. |
+  -----------------------------------------------------------------------
+  Tecnología                          Función
+  ----------------------------------- -----------------------------------
+  PHP                                 Procesamiento de solicitudes y
+                                      lógica del backend.
 
-## Módulos del sistema
+  MVC                                 Organización de controladores,
+                                      modelos y vistas.
 
-Actualmente, Confypim integra los siguientes módulos:
+  Servicios PHP                       Separación y centralización de
+                                      reglas de negocio.
 
-- **Autenticación:** registro, inicio y cierre de sesión, y control de acceso.
-- **Dashboard:** panel principal con información general y navegación.
-- **Productos:** registro, consulta, actualización y desactivación de productos, además de la gestión del inventario.
-- **Ventas:** creación, consulta y administración de ventas, productos asociados, cantidades, totales y estados.
-- **Perfil:** consulta y actualización de información personal e imagen de perfil.
+  API / AJAX                          Comunicación asíncrona entre las
+                                      interfaces y el backend mediante
+                                      solicitudes HTTP y respuestas JSON.
 
-## Arquitectura del proyecto
+  HTML                                Estructura de las interfaces.
 
-El backend utiliza el patrón Modelo-Vista-Controlador (MVC), complementado con servicios que centralizan operaciones y reglas de negocio.
+  CSS                                 Presentación visual y diseño
+                                      adaptable.
 
-La comunicación entre las interfaces y el servidor se realiza mediante una API REST, utilizando solicitudes HTTP y respuestas en formato JSON.
+  JavaScript                          Interactividad y comunicación con
+                                      los endpoints.
 
-La autenticación utiliza sesiones PHP. El acceso a la base de datos se realiza mediante PDO.
+  React                               Desarrollo de la interfaz del
+                                      módulo de Ventas mediante
+                                      componentes.
 
-El módulo de Ventas utiliza React y Vite. Sus recursos compilados se integran con las vistas PHP de la aplicación.
+  Vite                                Herramienta de desarrollo y
+                                      compilación de la interfaz React.
 
-### Estructura principal
+  Chart.js                            Generación de gráficos para la
+                                      consulta de información financiera.
 
-```text
+  MySQL                               Almacenamiento de la información
+                                      del sistema.
+
+  PDO                                 Conexión y acceso a la base de
+                                      datos desde PHP.
+
+  Apache / XAMPP                      Entorno de ejecución y desarrollo
+                                      local.
+
+  Git / GitHub                        Control de versiones y alojamiento
+                                      del código fuente.
+
+  Railway                             Despliegue de la aplicación y
+                                      alojamiento de la base de datos de
+                                      producción.
+  -----------------------------------------------------------------------
+
+## Arquitectura general
+
+El backend está organizado siguiendo el patrón
+**Modelo-Vista-Controlador (MVC)**, complementado con una capa de
+servicios.
+
+-   **Modelos:** realizan las consultas y operaciones sobre la base de
+    datos.
+-   **Vistas:** presentan las interfaces que utiliza el usuario.
+-   **Controladores:** reciben las solicitudes, coordinan el flujo de
+    ejecución y preparan las respuestas.
+-   **Servicios:** agrupan reglas de negocio, validaciones y operaciones
+    que pueden ser compartidas por distintos módulos.
+-   **Endpoints AJAX:** reciben solicitudes desde JavaScript y devuelven
+    respuestas en formato JSON.
+-   **Helpers:** contienen funciones de apoyo reutilizables, como
+    autenticación y gestión de almacenamiento.
+
+El acceso a los datos se realiza mediante PDO. Las sesiones de PHP
+permiten identificar al usuario autenticado y proteger las
+funcionalidades privadas.
+
+### Organización de los módulos financieros
+
+Ingresos, Gastos y Reportes tienen vistas y rutas de acceso
+diferenciadas, pero comparten parte de la implementación interna para
+evitar repetir consultas y reglas comunes. La lógica compartida se
+encuentra principalmente en los archivos `FinanzasModel.php`,
+`FinanzasService.php` y `finanzas.js`, mientras que las clases y
+endpoints específicos establecen el contexto de cada módulo.
+
+### Interfaz del módulo de Ventas
+
+El módulo de Ventas utiliza React para organizar su interfaz en
+componentes. Vite compila los recursos de desarrollo y genera el archivo
+JavaScript que se integra en la aplicación PHP.
+
+## Estructura general del proyecto
+
+``` text
 Confypim/
-├── ajax/
+├── .git/                         # Historial y configuración local de Git
+├── ajax/                         # Endpoints para solicitudes asíncronas
 ├── app/
-│   ├── controllers/
-│   ├── helpers/
-│   ├── models/
-│   ├── services/
-│   └── views/
+│   ├── controllers/               # Controladores de los módulos
+│   ├── helpers/                   # Funciones auxiliares reutilizables
+│   ├── models/                    # Acceso y operaciones sobre los datos
+│   ├── services/                  # Reglas de negocio y validaciones
+│   └── views/                     # Interfaces organizadas por módulo
+│       ├── auth/
+│       ├── dashboard/
+│       ├── finanzas/
+│       ├── gastos/
+│       ├── ingresos/
+│       ├── inicio/
+│       ├── insumos/
+│       ├── perfil/
+│       ├── productos/
+│       ├── reportes/
+│       ├── ventas/
+│       └── sinpagina.php
 ├── assets/
-│   ├── css/
-│   ├── img/
-│   ├── js/
-│   └── react/
-├── config/
-├── includes/
-├── react/
-├── index.php
-├── API.md
+│   ├── css/                       # Hojas de estilo
+│   ├── img/                       # Logos, avatares, favicons y fotografías
+│   ├── js/                        # JavaScript de los módulos
+│   └── react/                     # Recursos compilados de React
+├── config/                        # Configuración general y conexión
+├── includes/                      # Elementos compartidos de la interfaz
+├── react/                         # Código fuente del módulo React
+│   ├── services/
+│   ├── ventas/
+│   │   └── components/
+│   └── main.jsx
+├── .gitattributes
+├── .gitignore
+├── API.md                         # Documentación de endpoints
+├── composer.json
+├── index.php                      # Punto de entrada y enrutador principal
+├── logout.php
 ├── package.json
 ├── package-lock.json
+├── README.md
+├── site.webmanifest
 └── vite.config.js
 ```
 
-## Requisitos para ejecución local
+> La estructura muestra la organización general del proyecto. Cada
+> carpeta contiene los archivos correspondientes a los módulos y
+> responsabilidades indicados.
 
-- XAMPP.
-- PHP compatible con las características utilizadas por el proyecto.
-- MySQL o MariaDB.
-- phpMyAdmin.
-- Navegador web.
-- Node.js y npm, cuando sea necesario reconstruir los componentes React.
+## Instalación y ejecución local
 
-## Instalación local
+1.  Instalar XAMPP y activar los servicios de Apache y MySQL.
 
-### 1. Obtener el código fuente
+2.  Copiar la carpeta `Confypim` dentro del directorio `htdocs`.
 
-Clonar el repositorio:
+3.  Crear una base de datos local e importar el respaldo SQL
+    correspondiente.
 
-```bash
-git clone https://github.com/Kamikazo03/Confypim.git
-```
+4.  Revisar la configuración de conexión en `config/database.php` y los
+    valores de entorno requeridos por la aplicación.
 
-Ubicar la carpeta del proyecto dentro del directorio `htdocs` de XAMPP.
+5.  Instalar las dependencias PHP mediante Composer cuando corresponda.
 
-### 2. Iniciar los servicios
+6.  Instalar las dependencias de JavaScript con npm si se necesita
+    trabajar o recompilar el módulo React.
 
-Desde el panel de control de XAMPP, iniciar:
+7.  Abrir el proyecto desde el navegador:
 
-- Apache.
-- MySQL.
+    ``` text
+    http://localhost/Confypim/
+    ```
 
-### 3. Preparar la base de datos
+8.  Crear una cuenta o iniciar sesión para acceder a los módulos
+    privados.
 
-Crear la base de datos `confypim` desde phpMyAdmin e importar el respaldo SQL autorizado para el entorno de desarrollo.
-
-El respaldo de la base de datos no forma parte del repositorio público. Debe obtenerse y administrarse por separado.
-
-### 4. Configurar la conexión
-
-El archivo `config/database.php` permite utilizar los valores locales predeterminados de XAMPP o las variables de entorno configuradas para el servidor.
-
-Para el entorno local se utilizan los parámetros correspondientes a la instalación de XAMPP.
-
-### 5. Acceder a la aplicación
-
-Si el proyecto está ubicado en `htdocs/Confypim`, acceder desde:
-
-```text
-http://localhost/Confypim/
-```
-
-El acceso a las funcionalidades protegidas requiere una cuenta con permisos de administrador.
-
-## Recursos React
-
-Los componentes del módulo de Ventas se encuentran dentro del directorio `react/`.
-
-Para instalar las dependencias y reconstruir los recursos:
-
-```bash
-npm ci
-npm run build
-```
-
-Los archivos generados se integran con la aplicación PHP mediante los recursos compilados ubicados en `assets/react/ventas/`.
-
-## Variables de entorno
-
-La configuración de producción utiliza variables de entorno para evitar almacenar credenciales en el código fuente.
-
-Entre las variables utilizadas se encuentran:
-
-| Variable | Descripción |
-|---|---|
-| `APP_ENV` | Identifica el entorno de ejecución. |
-| `APP_BASE_URL` | Define la URL base de la aplicación. |
-| `MYSQLHOST` | Servidor de MySQL. |
-| `MYSQLPORT` | Puerto de conexión. |
-| `MYSQLDATABASE` | Nombre de la base de datos. |
-| `MYSQLUSER` | Usuario de conexión. |
-| `MYSQLPASSWORD` | Contraseña de conexión. |
-
-Las credenciales deben configurarse directamente en el entorno de ejecución y no publicarse en el repositorio.
-
-## Documentación de la API
-
-La documentación de los endpoints, métodos HTTP, parámetros y respuestas se encuentra en:
-
-```text
-API.md
-```
+Los respaldos SQL, credenciales y archivos que contengan información
+personal deben mantenerse fuera del repositorio público.
 
 ## Despliegue
 
-El proyecto está preparado para su despliegue en Railway, utilizando servicios independientes para la aplicación PHP y la base de datos MySQL.
+La aplicación está desplegada en **Railway**. El flujo habitual de
+publicación consiste en probar los cambios en el entorno local,
+registrarlos mediante Git, enviarlos al repositorio de GitHub y permitir
+que Railway ejecute el despliegue configurado.
 
-El backend atenderá las solicitudes de la aplicación web y de los clientes móviles que consuman la API.
+Los archivos que deban conservarse entre despliegues, como las
+fotografías de perfil, se almacenan en el volumen persistente
+configurado para producción. La configuración de producción y sus
+credenciales deben administrarse mediante variables de entorno y
+mantenerse fuera del repositorio.
 
-Las fotografías de perfil requieren almacenamiento persistente en producción.
+## Identidad visual
 
-## Seguridad
+Confypim utiliza una paleta cálida y suave, basada principalmente en
+tonos rosa, beige y blanco:
 
-- No publicar credenciales de conexión.
-- No incluir archivos `.env` en el repositorio.
-- No publicar contraseñas ni hashes de cuentas personales.
-- No incluir fotografías personales ni archivos subidos por usuarios.
-- Mantener la base de datos protegida mediante la red privada del proveedor.
-- Utilizar HTTPS en producción.
-- Validar las solicitudes y proteger las funcionalidades que requieren autenticación.
+  Uso                     Color
+  ----------------------- -----------
+  Fondo principal         `#F8F5F2`
+  Tarjetas                `#FFFFFF`
+  Color primario          `#EBC8D6`
+  Color primario oscuro   `#D58BA6`
+  Color primario claro    `#F6E7EE`
+  Color secundario        `#B8896A`
+  Texto principal         `#4A4A4A`
 
-## Repositorio
+Las interfaces utilizan hojas de estilo propias y componentes adaptables
+para conservar una experiencia coherente en computadores, tabletas y
+teléfonos.
 
-[https://github.com/Kamikazo03/Confypim](https://github.com/Kamikazo03/Confypim)
+## Control de versiones
 
----
+El proyecto utiliza Git y GitHub para registrar la evolución del código
+fuente. Se recomienda realizar commits descriptivos, probar cada cambio
+en el entorno local y verificar el funcionamiento de los módulos antes
+de publicar una nueva versión.
 
-**Confypim** — Proyecto de desarrollo de software para la gestión de pequeños emprendimientos de repostería.
+## Documentación adicional
+
+La documentación de los endpoints y sus operaciones se encuentra en
+`API.md`.
+
+## Autoría
+
+Proyecto desarrollado como parte del proceso formativo de **Análisis y
+Desarrollo de Software del SENA**.

@@ -74,7 +74,7 @@ $menu = [
     "ingresos" => [
         "titulo"         => "Ingresos",
         "tituloBrowser"  => "Ingresos",
-        "descripcion"    => "Esta sección se encuentra actualmente en desarrollo.",
+        "descripcion"    => "Analiza los ingresos, sus categorías y el rendimiento de los productos vendidos.",
         "icono"          => "💰",
         "url"            => BASE_URL . "index.php?page=ingresos",
         "activo"         => true
@@ -87,7 +87,7 @@ $menu = [
     "gastos" => [
         "titulo"         => "Gastos",
         "tituloBrowser"  => "Gastos",
-        "descripcion"    => "Esta sección se encuentra actualmente en desarrollo.",
+        "descripcion"    => "Analiza los gastos del emprendimiento y sus categorías.",
         "icono"          => "🧾",
         "url"            => BASE_URL . "index.php?page=gastos",
         "activo"         => true
@@ -100,7 +100,7 @@ $menu = [
     "reportes" => [
         "titulo"         => "Reportes",
         "tituloBrowser"  => "Reportes",
-        "descripcion"    => "Esta sección se encuentra actualmente en desarrollo.",
+        "descripcion"    => "Compara ingresos y gastos, consulta balances y conserva reportes históricos.",
         "icono"          => "📈",
         "url"            => BASE_URL . "index.php?page=reportes",
         "activo"         => true

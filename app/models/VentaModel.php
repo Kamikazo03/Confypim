@@ -754,10 +754,10 @@ class VentaModel
                 ) AS total_ventas_pagadas,
 
                 (
-                    SELECT COALESCE(SUM(total), 0)
-                    FROM venta
-                    WHERE estado = 'Pagada'
-                      AND id_usuario = :id_usuario_2
+                    SELECT COALESCE(SUM(monto), 0)
+                    FROM ingreso
+                    WHERE id_usuario = :id_usuario_2
+                      AND id_categoria_ingreso = 1
                 ) AS ingresos_totales,
 
                 (
@@ -854,4 +854,36 @@ class VentaModel
     {
         return $this->db;
     }
+
+
+    /**
+     * Registra el ingreso correspondiente a una venta pagada.
+     *
+     * La restricción UNIQUE de ingreso (id_usuario, id_venta)
+     * protege la operación frente a duplicados.
+     */
+    public function registrarIngresoVenta(
+        int $idVenta,
+        int $idUsuario,
+        float $monto,
+        string $fecha
+    ): void {
+        $sql = "
+            INSERT INTO ingreso
+                (monto, fecha_ingreso, id_categoria_ingreso, id_usuario, id_venta)
+            VALUES
+                (:monto, :fecha, 1, :usuario, :venta)
+            ON DUPLICATE KEY UPDATE
+                id_ingreso = id_ingreso
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':monto' => $monto,
+            ':fecha' => $fecha,
+            ':usuario' => $idUsuario,
+            ':venta' => $idVenta
+        ]);
+    }
+
 }

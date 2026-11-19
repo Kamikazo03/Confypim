@@ -36,16 +36,16 @@ require_once __DIR__ . '/config/app.php';
 /**
  * Obtener la página solicitada.
  *
- * Si no existe el parámetro "page", se utilizará
- * el Dashboard como ruta principal.
+ * Si no existe el parámetro "page", se mostrará
+ * Inicio para visitantes y el Dashboard para usuarios autenticados.
  */
 $pagina = filter_input(
     INPUT_GET,
     'page',
     FILTER_SANITIZE_FULL_SPECIAL_CHARS
-) ?? 'dashboard';
+);
 
-$pagina = $pagina ?: (estaAutenticado() ? 'dashboard' : 'login');
+$pagina = $pagina ?: (estaAutenticado() ? 'dashboard' : 'inicio');
 
 
 /* ==========================================================
@@ -53,12 +53,12 @@ $pagina = $pagina ?: (estaAutenticado() ? 'dashboard' : 'login');
  * ========================================================== */
 
 /**
- * El Login y el Registro son las únicas rutas públicas.
+ * Inicio, Login y Registro son las rutas públicas.
  *
  * Si el usuario ya está autenticado e intenta acceder
  * a cualquiera de estas vistas, será enviado al Dashboard.
  */
-if ($pagina === 'login' || $pagina === 'register') {
+if ($pagina === 'inicio' || $pagina === 'login' || $pagina === 'register') {
 
     /**
      * Usuario autenticado.
@@ -71,6 +71,12 @@ if ($pagina === 'login' || $pagina === 'register') {
     /**
      * Cargar la vista solicitada.
      */
+    if ($pagina === 'inicio') {
+        $paginaActual = 'inicio';
+        require_once ROOT_PATH . '/app/views/inicio/index.php';
+        exit;
+    }
+
     if ($pagina === 'login') {
         require_once ROOT_PATH . '/app/views/auth/login.php';
         exit;
@@ -215,26 +221,41 @@ switch ($pagina) {
         break;
 
     /* ==========================================================
+     * INGRESOS, GASTOS Y REPORTES
+     * ========================================================== */
+
+    case 'ingresos':
+    case 'gastos':
+    case 'reportes':
+
+        /**
+         * Los tres módulos comparten una vista y recursos
+         * visuales, pero mantienen rutas independientes.
+         */
+        $paginaActual = $pagina;
+
+        if ($pagina === 'ingresos') {
+            require_once ROOT_PATH . '/app/views/ingresos/ingresos.php';
+        } elseif ($pagina === 'gastos') {
+            require_once ROOT_PATH . '/app/views/gastos/gastos.php';
+        } else {
+            require_once ROOT_PATH . '/app/views/reportes/reportes.php';
+        }
+
+        break;
+
+    /* ==========================================================
      * MÓDULOS EN DESARROLLO
      * ========================================================== */
 
     case 'inventario':
-    case 'ingresos':
-    case 'gastos':
-    case 'reportes':
     case 'configuracion':
 
-    /**
-     * Página actual.
-     */        
-    $paginaActual = $pagina;
+        $paginaActual = $pagina;
 
-    /**
-     * Cargar vista genérica.
-     */    
-    require_once ROOT_PATH . '/app/views/sinpagina.php';
+        require_once ROOT_PATH . '/app/views/sinpagina.php';
 
-    break;
+        break;
 
     /* ======================================================
      * PERFIL
