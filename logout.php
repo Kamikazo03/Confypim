@@ -27,10 +27,6 @@ cerrarSesion();
  * Redirección
  * ========================================================== */
 
-header(
-    'Location: ' .
-    BASE_URL .
-    'index.php?page=login'
-);
+header('Location: index.php');
 
 exit;
