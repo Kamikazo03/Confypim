@@ -281,15 +281,13 @@ function VentasApp() {
 
                 const respuesta =
                     await fetch(
-                        "/Confypim/ajax/producto.php",
+                        `${window.CONFYPIM_BASE_URL}ajax/producto.php`,
                         {
                             headers: {
-                                Accept:
-                                    "application/json"
+                                Accept: "application/json"
                             }
                         }
                     );
-
 
                 const datos =
                     await respuesta.json();

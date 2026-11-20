@@ -156,7 +156,7 @@ $paginaActual = 'login';
         =================================================== -->
 
         <p class="login-footer">
-            Acceso exclusivo para administradores.
+            Acceso exclusivo para emprendedores.
         </p>
 
         <p class="login-footer">
