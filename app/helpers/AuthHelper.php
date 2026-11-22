@@ -163,7 +163,7 @@ function esAdministrador(): bool
 /**
  * Exige que exista una sesión autenticada.
  *
- * Si no existe, redirige al login.
+ * Si no existe, redirige a la vista Inicio.
  *
  * @return void
  */
@@ -173,7 +173,7 @@ function exigirAutenticacion(): void
         header(
             'Location: ' .
             BASE_URL .
-            'index.php?page=login'
+            'index.php?page=inicio'
         );
 
         exit;
@@ -211,7 +211,7 @@ function exigirAdministrador(): void
 
 /**
  * Exige que exista una sesión autenticada
- * y que el usuario tenga rol administrador.
+ * y que el usuario tenga rol de administrador.
  *
  * Esta función está destinada exclusivamente
  * a endpoints AJAX/API.

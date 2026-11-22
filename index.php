@@ -49,7 +49,7 @@ $pagina = $pagina ?: (estaAutenticado() ? 'dashboard' : 'inicio');
 
 
 /* ==========================================================
- * LOGIN
+ * RUTAS PÚBLICAS
  * ========================================================== */
 
 /**
@@ -64,7 +64,7 @@ if ($pagina === 'inicio' || $pagina === 'login' || $pagina === 'register') {
      * Usuario autenticado.
      */
     if (estaAutenticado()) {
-        header( 'Location: ' . BASE_URL . 'index.php?page=dashboard');
+        header('Location: ' . BASE_URL . 'index.php?page=dashboard');
         exit;
     }
 
@@ -93,8 +93,11 @@ if ($pagina === 'inicio' || $pagina === 'login' || $pagina === 'register') {
  * ========================================================== */
 
 /**
- * Todas las rutas diferentes de Login requieren
- * una sesión válida de administrador.
+ * Todas las rutas diferentes de Inicio, Login y Registro
+ * requieren una sesión válida de administrador.
+ *
+ * Si el usuario no ha iniciado sesión, será redirigido
+ * a la vista Inicio.
  *
  * Esta protección se ejecuta antes de cargar cualquier
  * controlador o vista del sistema.
@@ -123,7 +126,7 @@ switch ($pagina) {
 
         /**
          * Obtener información del Dashboard.
-         */        
+         */
         $totalProductos = $dashboardController->contarProductos();
         $ultimosProductos = $dashboardController->listarUltimosProductos();
         $totalStockBajo = $dashboardController->contarStockBajo();
@@ -133,12 +136,12 @@ switch ($pagina) {
 
         /**
          * Página actual.
-         */        
+         */
         $paginaActual = 'dashboard';
 
         /**
          * Cargar vista.
-         */        
+         */
         require_once ROOT_PATH . '/app/views/dashboard/index.php';
 
         break;
@@ -148,28 +151,28 @@ switch ($pagina) {
      * ========================================================== */
 
     case 'productos':
-        
+
         /**
          * Crear controlador.
          */
         require_once ROOT_PATH . '/app/controllers/ProductoController.php';
-        
+
         /**
          * Obtener productos.
          */
-        $productoController = new ProductoController();        
+        $productoController = new ProductoController();
         $productos = $productoController->listarProductos();
-        
+
         /**
          * Página actual.
-         */  
+         */
         $paginaActual = 'productos';
-        
+
         /**
          * Cargar vista.
-         */ 
+         */
         require_once ROOT_PATH . '/app/views/productos/productos.php';
-        
+
         break;
 
     /* ==========================================================
@@ -276,11 +279,11 @@ switch ($pagina) {
     default:
 
         /**
-        * Página de mantenimiento / ruta no encontrada.
-        */
+         * Página de mantenimiento / ruta no encontrada.
+         */
         $paginaActual = 'mantenimiento';
 
         require_once ROOT_PATH . '/app/views/sinpagina.php';
-        
+
         break;
 }
